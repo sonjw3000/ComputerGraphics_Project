@@ -1,7 +1,13 @@
-#include <stdio.h>
+#pragma comment (lib, "glew32.lib")
+#pragma comment (lib, "freeglut.lib")
 
-int main()
+#include "MyInclude/includeThis.h"
+
+#define WINDOWSIZE 800
+
+void main(int argc, char* argv[])
 {
-	printf("hello\n");
-	return 0;
+	if (!CORE->init(argc, argv, WINDOWSIZE, WINDOWSIZE)) exit(100);
+
+	CORE->run();
 }
