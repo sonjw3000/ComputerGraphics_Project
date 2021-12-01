@@ -140,6 +140,40 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyInclude\Core.cpp" />
+    <ClCompile Include="MyInclude\CubeMap.cpp" />
+    <ClCompile Include="MyInclude\DepthMap.cpp" />
+    <ClCompile Include="MyInclude\Mesh.cpp" />
+    <ClCompile Include="MyInclude\Plane.cpp" />
+    <ClCompile Include="MyInclude\Player.cpp" />
+    <ClCompile Include="MyInclude\Scene.cpp" />
+    <ClCompile Include="MyInclude\ShaderProgram.cpp" />
+    <ClCompile Include="MyInclude\TextureClass.cpp" />
+    <ClCompile Include="MyInclude\Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyInclude\Core.h" />
+    <ClInclude Include="MyInclude\CubeMap.h" />
+    <ClInclude Include="MyInclude\DepthMap.h" />
+    <ClInclude Include="MyInclude\Game.h" />
+    <ClInclude Include="MyInclude\includeThis.h" />
+    <ClInclude Include="MyInclude\macro.h" />
+    <ClInclude Include="MyInclude\Mesh.h" />
+    <ClInclude Include="MyInclude\Plane.h" />
+    <ClInclude Include="MyInclude\Player.h" />
+    <ClInclude Include="MyInclude\Scene.h" />
+    <ClInclude Include="MyInclude\ShaderProgram.h" />
+    <ClInclude Include="MyInclude\TextureClass.h" />
+    <ClInclude Include="MyInclude\Timer.h" />
+    <ClInclude Include="MyInclude\Types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\1pass_fragment.glsl" />
+    <None Include="Shader\1pass_vertex.glsl" />
+    <None Include="Shader\fragment_1.glsl" />
+    <None Include="Shader\fragment_cube.glsl" />
+    <None Include="Shader\vertex_1.glsl" />
+    <None Include="Shader\vertex_cube.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
