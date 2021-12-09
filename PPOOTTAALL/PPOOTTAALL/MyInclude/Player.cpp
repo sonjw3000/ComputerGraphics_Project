@@ -6,8 +6,12 @@ glm::vec3 Player::m_vDir = glm::vec3(0.0f);
 glm::vec3 Player::m_vForward = glm::vec3(0.0f, 0.0f, 1.0f);
 
 Player::Player(float size, glm::vec3 pivot) :
-	Mesh("Objs/Cube.obj", glm::vec3(2.0f, 3.0f, 1.5f) * size, glm::vec3(0.0f), (pivot) + glm::vec3(0.0f, 1.5f, 0.0f) * size)
+	Mesh("Objs/Cube.obj", glm::vec3(1.0f, 1.0f, 1.0f)* size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size)
 {
+	body = new Mesh("Objs/body.obj", glm::vec3(0.125f, 0.125f, 0.125f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 1.5f, 0.0f) * size);
+	leftLeg = new Mesh("Objs/legLeft.obj", glm::vec3(0.125f, 0.125f, 0.125f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 1.5f, 0.0f) * size);
+	rightLeg = new Mesh("Objs/legRight.obj", glm::vec3(0.125f, 0.125f, 0.125f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 1.5f, 0.0f) * size);
+	backLeg = new Mesh("Objs/legBack.obj", glm::vec3(0.125f, 0.125f, 0.125f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 1.5f, 0.0f) * size);
 	for (int i = 0; i < 0; ++i) {
 		m_pTextures[i] = new TextureClass("");
 	}
@@ -15,7 +19,11 @@ Player::Player(float size, glm::vec3 pivot) :
 
 Player::~Player()
 {
+	delete[] body;
 	delete[] m_pTextures;
+	delete[] leftLeg;
+	delete[] rightLeg;
+	delete[] backLeg;
 }
 
 void Player::input(char key)
@@ -45,7 +53,11 @@ void Player::draw(unsigned int shaderNum, int textureBind)
 	// texture
 
 	this->uniformModelingMat(shaderNum);
-	Mesh::draw();
+	body->draw();
+	leftLeg->draw();
+	rightLeg->draw();
+	backLeg->draw();
+	//Mesh::draw();
 }
 
 void Player::setDirZero()

@@ -11,7 +11,7 @@ Scene::Scene(int sceneNum, CameraVectors& cam)
 	m_tCamera = cam;
 
 	m_pPlane = new Plane("Objs/Cube.obj", glm::vec3(50.0f, 0.1f, 50.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
-	m_pPlayer = new Player(0.5f, glm::vec3(0.0f));
+	m_pPlayer = new Player(1.0f, glm::vec3(0.0f));
 	switch (sceneNum) {
 	case 0:
 		break;

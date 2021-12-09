@@ -9,7 +9,10 @@ class TextureClass;
 class Player : public Mesh {
 private:
 	TextureClass* m_pTextures[6];
-
+	Mesh* body;
+	Mesh* leftLeg;
+	Mesh* rightLeg;
+	Mesh* backLeg;
 public:
 	Player() = delete;
 	Player(float size, glm::vec3 pivot);
