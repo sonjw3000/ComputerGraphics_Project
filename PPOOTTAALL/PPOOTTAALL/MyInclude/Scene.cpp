@@ -3,6 +3,7 @@
 #include "Plane.h"
 #include "Player.h"
 #include "RotatingCube.h"
+#include "Portal.h"
 
 Scene::Scene(int sceneNum, CameraVectors& cam)
 {

@@ -6,24 +6,26 @@ glm::vec3 Player::m_vDir = glm::vec3(0.0f);
 glm::vec3 Player::m_vForward = glm::vec3(0.0f, 0.0f, 1.0f);
 
 Player::Player(float size, glm::vec3 pivot) :
-	Mesh("Objs/Cube.obj", glm::vec3(1.0f, 1.0f, 1.0f)* size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size)
+	Mesh("Objs/Cube.obj", glm::vec3(1.0f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size)
 {
-	body = new Mesh("Objs/body.obj", glm::vec3(0.125f, 0.125f, 0.125f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 1.5f, 0.0f) * size);
-	leftLeg = new Mesh("Objs/legLeft.obj", glm::vec3(0.125f, 0.125f, 0.125f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 1.5f, 0.0f) * size);
-	rightLeg = new Mesh("Objs/legRight.obj", glm::vec3(0.125f, 0.125f, 0.125f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 1.5f, 0.0f) * size);
-	backLeg = new Mesh("Objs/legBack.obj", glm::vec3(0.125f, 0.125f, 0.125f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 1.5f, 0.0f) * size);
-	for (int i = 0; i < 0; ++i) {
-		m_pTextures[i] = new TextureClass("");
-	}
+	m_meBody = new Mesh("Objs/body.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
+	m_meLeftLeg = new Mesh("Objs/legLeft.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
+	m_meRightLeg = new Mesh("Objs/legRight.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
+	m_meBackLeg = new Mesh("Objs/legBack.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
+
+	m_pTextureBody = new TextureClass("Texture/Player/body_texture.jpg");
+	//m_pTextureLeg = new TextureClass("Texture/Player/leg_texture.jpg");
 }
 
 Player::~Player()
 {
-	delete[] body;
-	delete[] m_pTextures;
-	delete[] leftLeg;
-	delete[] rightLeg;
-	delete[] backLeg;
+	delete m_pTextureBody;
+	delete m_pTextureLeg;
+
+	delete m_meBody;
+	delete m_meLeftLeg;
+	delete m_meRightLeg;
+	delete m_meBackLeg;
 }
 
 void Player::input(char key)
@@ -52,11 +54,31 @@ void Player::draw(unsigned int shaderNum, int textureBind)
 {
 	// texture
 
-	this->uniformModelingMat(shaderNum);
-	body->draw();
-	leftLeg->draw();
-	rightLeg->draw();
-	backLeg->draw();
+
+	//this->uniformModelingMat(shaderNum);
+	glm::mat4 modeling(1.0f);
+
+	m_pTextureBody->bindTexture(textureBind);
+
+	// body
+	modeling = this->m_mSRTModel * m_meBody->getModelTransform();
+	glUniformMatrix4fv(glGetUniformLocation(shaderNum, "modelTransform"), 1, GL_FALSE, glm::value_ptr(modeling));
+	m_meBody->draw();
+
+	// l leg
+	modeling = this->m_mSRTModel * m_meLeftLeg->getModelTransform();
+	glUniformMatrix4fv(glGetUniformLocation(shaderNum, "modelTransform"), 1, GL_FALSE, glm::value_ptr(modeling));
+	m_meLeftLeg->draw();
+
+	// r leg
+	modeling = this->m_mSRTModel * m_meRightLeg->getModelTransform();
+	glUniformMatrix4fv(glGetUniformLocation(shaderNum, "modelTransform"), 1, GL_FALSE, glm::value_ptr(modeling));
+	m_meRightLeg->draw();
+
+	// b leg
+	modeling = this->m_mSRTModel * m_meBackLeg->getModelTransform();
+	glUniformMatrix4fv(glGetUniformLocation(shaderNum, "modelTransform"), 1, GL_FALSE, glm::value_ptr(modeling));
+	m_meBackLeg->draw();
 	//Mesh::draw();
 }
 

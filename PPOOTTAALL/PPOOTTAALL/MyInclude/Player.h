@@ -8,11 +8,14 @@ class TextureClass;
 // body is main
 class Player : public Mesh {
 private:
-	TextureClass* m_pTextures[6];
-	Mesh* body;
-	Mesh* leftLeg;
-	Mesh* rightLeg;
-	Mesh* backLeg;
+	// body
+	TextureClass* m_pTextureBody;
+	TextureClass* m_pTextureLeg;
+
+	Mesh* m_meBody;
+	Mesh* m_meLeftLeg;
+	Mesh* m_meRightLeg;
+	Mesh* m_meBackLeg;
 public:
 	Player() = delete;
 	Player(float size, glm::vec3 pivot);

@@ -5,7 +5,7 @@
 class Player;
 class Mesh;
 class Plane;
-class RotatingCube;
+class Portal;
 
 class Scene {
 private:
@@ -18,6 +18,7 @@ public:
 
 private:
 	Plane* m_pPlane;
+	Portal* m_pPortal[2];
 
 	Player* m_pPlayer;
 

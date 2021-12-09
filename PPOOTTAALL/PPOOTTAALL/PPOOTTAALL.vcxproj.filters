@@ -58,6 +58,9 @@
     <Filter Include="소스 파일\Texture\Simple">
       <UniqueIdentifier>{c26c62bc-3ef3-4aba-ba35-52793f9b6ded}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Mesh\Portal">
+      <UniqueIdentifier>{fad9bc02-33e3-4f63-b056-e0b85df22c91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="MyInclude\Timer.cpp">
       <Filter>소스 파일\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="MyInclude\Portal.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +141,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="MyInclude\Types.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MyInclude\Portal.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
