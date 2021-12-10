@@ -22,7 +22,7 @@ float shadowCalculate(vec4 fragPos, float dotNormal)
 
 	float shadow = 0.0;
 
-	float bias = max(0.001 * (1.0 - dotNormal), 0.0008);
+	float bias = max(0.00029 * (1.0 - dotNormal), 0.00005);
 
 	for (int i = -1; i <= 1; ++i) {
 		for (int j = -1; j <= 1; ++j) {

@@ -142,7 +142,7 @@ void Single::initializeProgram()
 	m_pMainShader->use();
 	m_pMainShader->setMat4("lightVP", (shdwProj * lightView));
 
-	m_pDepthMap = new DepthMap(4096, 4096);
+	m_pDepthMap = new DepthMap(8184, 8184);
 
 	m_pMainShader->setInt("shadowMap", 0);
 	m_pMainShader->setInt("texture0", 1);
