@@ -193,7 +193,6 @@ void Mesh::setScale(glm::vec3 vOffset)
 void Mesh::setRotate(glm::vec3 vOffset)
 {
 	m_vRotate = vOffset;
-
 	m_mRotate = glm::rotate(glm::mat4(1.0f), glm::radians(m_vRotate.x), glm::vec3(1.0f, 0.0f, 0.0f));
 	m_mRotate = glm::rotate(m_mRotate, glm::radians(m_vRotate.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	m_mRotate = glm::rotate(m_mRotate, glm::radians(m_vRotate.z), glm::vec3(0.0f, 0.0f, 1.0f));
