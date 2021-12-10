@@ -12,8 +12,13 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 {
 	m_tCamera = cam;
 
-	m_pPlane = new Plane("Objs/Cube.obj", glm::vec3(50.0f, 0.1f, 50.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
-	m_pPlayer = new Player(1.0f, glm::vec3(0.0f));
+	m_pPlane = new Plane("Objs/Cube.obj", glm::vec3(20.0f, 0.1f, 20.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
+	m_pPlayer = new Player(0.4f, glm::vec3(0.0f));
+
+	m_pWall[0] = new Plane("Objs/Cube.obj", glm::vec3(10.0f, 0.1f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f,5.0f,0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 오른쪽 벽
+	m_pWall[1] = new Plane("Objs/Cube.obj", glm::vec3(10.0f, 0.1f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(10.0f,5.0f,0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 왼쪽 벽
+	m_pWall[2] = new Plane("Objs/Cube.obj", glm::vec3(20.0f, 0.1f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f,5.0f, -10.0f), "Texture/bg.png");	// 
+	m_pWall[3] = new Plane("Objs/Cube.obj", glm::vec3(20.0f, 0.1f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/bg.png");
 
 	m_pPortal[0] = new Portal(5.0f, 0, glm::vec3(10.0f, 0.0f, 0.0f));
 	m_pPortal[1] = new Portal(5.0f, 2, glm::vec3(0.0f, 0.0f, 10.0f));
@@ -81,6 +86,11 @@ void Scene::draw(unsigned int shaderNum, int textureBind)
 {
 	// draw all
 	m_pPlane->draw(shaderNum, textureBind);
+
+	m_pWall[0]->draw(shaderNum, textureBind);
+	m_pWall[1]->draw(shaderNum, textureBind);
+	m_pWall[2]->draw(shaderNum, textureBind);
+	m_pWall[3]->draw(shaderNum, textureBind);
 
 	m_pPlayer->draw(shaderNum, textureBind);
 
