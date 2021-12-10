@@ -14,6 +14,7 @@ struct CameraVectors {
 public:
 	float yaw = 45.0f, pitch = 45.0f;
 	float scroll = 5.0f;
+	bool fpsMode = false;
 
 public:
 	void updatePos(float dx, float dy) {
@@ -24,13 +25,20 @@ public:
 		if (pitch > 89.0f) pitch = 89.0f;
 		else if (pitch < -89.0f) pitch = -89.0f;
 
-		vEYE.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
-		vEYE.y = glm::sin(glm::radians(pitch));
-		vEYE.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+		if (fpsMode) {
+			vAT.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+			vAT.y = glm::sin(glm::radians(-pitch));
+			vAT.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+		}
+		else {
+			vEYE.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+			vEYE.y = glm::sin(glm::radians(pitch));
+			vEYE.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+		}
 	}
 
 	glm::mat4 getViewMat() const {
-		return glm::lookAt((vEYE  * scroll) + vAT, vAT, vUP);
+		return fpsMode ? glm::lookAt(vEYE, vEYE + vAT, vUP) : glm::lookAt((vEYE  * scroll) + vAT, vAT, vUP);
 	}
 
 };

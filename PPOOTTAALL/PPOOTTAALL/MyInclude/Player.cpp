@@ -2,14 +2,16 @@
 #include "TextureClass.h"
 
 
-glm::vec3 Player::m_vDir = glm::vec3(0.0f);
-glm::vec3 Player::m_vForward = glm::vec3(0.0f, 0.0f, 1.0f);
+//glm::vec3 Player::m_vDir = glm::vec3(0.0f);
+//glm::vec3 Player::m_vForward = glm::vec3(0.0f, 0.0f, 1.0f);
 
 Player::Player(float size, glm::vec3 pivot) :
-	Mesh("Objs/Cube.obj", glm::vec3(1.0f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size),
+	Mesh("Objs/Cube.obj", glm::vec3(1.0f) * size, glm::vec3(0.0f), (pivot) + glm::vec3(0.0f, 0.5f, 0.0f) * size),
 	m_vRightRot(glm::vec3(0.0f)),
 	m_vLeftRot(glm::vec3(0.0f)),
-	m_vBackRot(glm::vec3(20.0f,0.0f,0.0f))
+	m_vBackRot(glm::vec3(20.0f,0.0f,0.0f)),
+	m_vDir(glm::vec3(0.0f)),
+	m_vForward(glm::vec3(0.0f, 0.0f, 1.0f))
 {
 	m_pBody = new Mesh("Objs/body.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 2.0f, 0.0f) * size);
 	m_pLeftLeg = new Mesh("Objs/legLeft.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 2.0f, 0.0f) * size);
@@ -18,7 +20,7 @@ Player::Player(float size, glm::vec3 pivot) :
 	m_pGun = new Mesh("Objs/potalgun.obj", glm::vec3(0.0625f) * size, glm::vec3(0.0f,180.0f,0.0f), pivot + glm::vec3(-1.5f, 3.5f, 0.0f) * size);
 
 	m_pTextureBody = new TextureClass("Texture/Player/body_texture.jpg");
-	//m_pTextureLeg = new TextureClass("Texture/Player/leg_texture.jpg");
+	m_pTextureLeg = new TextureClass("Texture/Player/leg.png");
 }
 
 Player::~Player()
@@ -99,6 +101,8 @@ void Player::draw(unsigned int shaderNum, int textureBind)
 	glUniformMatrix4fv(glGetUniformLocation(shaderNum, "modelTransform"), 1, GL_FALSE, glm::value_ptr(modeling));
 	m_pBody->draw();
 
+	m_pTextureLeg->bindTexture(textureBind);
+
 	// l leg
 	modeling = this->m_mSRTModel * m_pLeftLeg->getModelTransform();
 	glUniformMatrix4fv(glGetUniformLocation(shaderNum, "modelTransform"), 1, GL_FALSE, glm::value_ptr(modeling));
@@ -117,7 +121,15 @@ void Player::draw(unsigned int shaderNum, int textureBind)
 	modeling = this->m_mSRTModel * m_pGun->getModelTransform();
 	glUniformMatrix4fv(glGetUniformLocation(shaderNum, "modelTransform"), 1, GL_FALSE, glm::value_ptr(modeling));
 	m_pGun->draw();
-	//Mesh::draw();
+
+
+#ifdef _DEBUG		// bounding box
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	uniformModelingMat(shaderNum);
+	Mesh::draw();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+#endif
 }
 
 void Player::setDirZero()
@@ -128,6 +140,11 @@ void Player::setDirZero()
 void Player::setForward(glm::vec3 newFow)
 {
 	m_vForward = newFow;
+}
+
+glm::vec3 Player::getFoward() const 
+{
+	return m_vForward;
 }
 
 void Player::moveBack(glm::vec3 backHow)

@@ -31,7 +31,7 @@ bool Single::init(int argc, char* argv[], int sizex, int sizey)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(sizex, sizey);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("hw-2");
+	glutCreateWindow("PPOORRTTAALL");
 
 
 	// Initialize GLEW

@@ -153,6 +153,7 @@
     <ClCompile Include="MyInclude\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MyInclude\CollisionCheck.h" />
     <ClInclude Include="MyInclude\Core.h" />
     <ClInclude Include="MyInclude\CubeMap.h" />
     <ClInclude Include="MyInclude\DepthMap.h" />

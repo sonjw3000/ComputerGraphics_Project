@@ -34,16 +34,18 @@ private:
 	glm::vec3 m_vBackRot;
 
 private:
-	static glm::vec3 m_vDir;
-	static glm::vec3 m_vForward;
+	glm::vec3 m_vDir;
+	glm::vec3 m_vForward;
 
 public:
-	static void input(char key);
+	void input(char key);
 	void update(float deltaTime);
 	void draw(unsigned int shaderNum, int textureBind);
 
-	static void setDirZero();
-	static void setForward(glm::vec3 newFow);
+	void setDirZero();
+	void setForward(glm::vec3 newFow);
+
+	glm::vec3 getFoward() const;
 
 public:
 	void moveBack(glm::vec3 backHow);

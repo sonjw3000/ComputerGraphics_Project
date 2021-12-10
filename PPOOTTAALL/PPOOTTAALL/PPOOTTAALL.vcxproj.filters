@@ -146,6 +146,9 @@
     <ClInclude Include="MyInclude\Portal.h">
       <Filter>소스 파일\Mesh\Portal</Filter>
     </ClInclude>
+    <ClInclude Include="MyInclude\CollisionCheck.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\vertex_1.glsl">

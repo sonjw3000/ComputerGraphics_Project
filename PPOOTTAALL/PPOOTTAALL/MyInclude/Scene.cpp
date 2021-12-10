@@ -5,14 +5,14 @@
 #include "Player.h"
 #include "RotatingCube.h"
 #include "Portal.h"
+#include "CollisionCheck.h"
+
 
 Scene::Scene(int sceneNum, CameraVectors& cam) :
 	m_pPortal{nullptr, nullptr},
 	m_pPlane(nullptr),
 	m_iSceneNum(sceneNum)
 {
-	m_tCamera = cam;
-
 	m_pPlane = new Plane("Objs/Cube.obj", glm::vec3(20.0f, 0.1f, 20.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
 	m_pPlayer = new Player(0.4f, glm::vec3(0.0f));
 
@@ -32,55 +32,111 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 	case 2:
 		break;
 	}
+
+	m_tCamera = cam;
+	m_tCamera.fpsMode = true;
+
+	if (m_tCamera.fpsMode) {
+		m_tCamera.vEYE = m_pPlayer->getTranslateVec();
+		m_tCamera.vAT = m_pPlayer->getFoward();
+	}
+	else {
+		m_tCamera = cam;
+	}
+
 }
 
 Scene::~Scene()
 {
-	//delete m_pMeshes;
+	delete m_pPlane;
+	delete m_pPlayer;
+
+	for(int i = 0; i < 2; ++i)
+		if (m_pPortal[i]) delete m_pPortal[i];
+
+	for (int i = 0; i < 4; ++i)
+		if (m_pWall[i]) delete m_pWall[i];
 }
 
 void Scene::input()
 {
 	// player move here
-	if (GetAsyncKeyState('W') & 0x8000) Player::input('w');
-	if (GetAsyncKeyState('S') & 0x8000) Player::input('s');
-	if (GetAsyncKeyState('A') & 0x8000) Player::input('a');
-	if (GetAsyncKeyState('D') & 0x8000) Player::input('d');
+	if (GetAsyncKeyState('W') & 0x8000) m_pPlayer->input('w');
+	if (GetAsyncKeyState('S') & 0x8000) m_pPlayer->input('s');
+	if (GetAsyncKeyState('A') & 0x8000) m_pPlayer->input('a');
+	if (GetAsyncKeyState('D') & 0x8000) m_pPlayer->input('d');
 }
 
 void Scene::update(float frameTime)
 {
+	glm::vec3 foward;
 	// update here
-	glm::vec3 foward = m_tCamera.vEYE;
-	foward.y = 0;
-	foward = glm::normalize(foward);
-	Player::setForward(-foward);
-	 
+	if (m_tCamera.fpsMode) {
+		m_tCamera.vEYE = m_pPlayer->getTranslateVec();
+		foward = m_tCamera.vAT;
+		foward.y = 0;
+		foward = glm::normalize(foward);
+	}
+	else {
+		foward = m_tCamera.vEYE;
+		foward.y = 0;
+		foward = -glm::normalize(foward);
+	}
+	m_pPlayer->setForward(foward);
+
 	//----------------------------------------------
 	// player move
 	m_pPlayer->update(frameTime);
 
 	//----------------------------------------------
-	// cubes rotate
 
 	//----------------------------------------------
 	// collide check
 	// player - floor
 
 
-	// player - rotating cube
+	// player - portal
+	if (m_pPortal[0] && m_pPortal[1]) {
+		glm::vec3 playerPivot = m_pPlayer->getTranslateVec();
+		for (int i = 0; i < 2; ++i) {
+			glm::vec3 portalPivot = m_pPortal[i]->getTranslateVec();
+			glm::vec3 portalSize = m_pPortal[i]->getScaleVec();
+			if (aabbCollideCheck(playerPivot, playerPivot, portalPivot - portalSize, portalPivot + portalSize)) {
+				glm::vec3 distRot = m_pPortal[!i]->getRotateVec();
+				glm::vec3 srcRot = m_pPortal[i]->getRotateVec();
+
+				//glm::vec3 rot = distRot - srcRot;
+				//printf("%.2f %.2f %.2f \t", temp.x, temp.y, temp.z);
+
+				//glm::vec3 newFow = 
+
+				//m_pPlayer->setForward();
+				
+			}
+		}
+	}
 
 
 	// player button?
 
 	// player sleeping palyer
 
-	// camera update by player[0]
-	m_tCamera.vAT = m_pPlayer->getTranslateVec();
+	// camera update by player
+	if (m_tCamera.fpsMode) {
+		m_tCamera.vEYE = m_pPlayer->getTranslateVec();
+		//m_tCamera.vAT = m_pPlayer->getFoward();
+	}
+	else {
+		m_tCamera.vAT = m_pPlayer->getTranslateVec();
+	}
 	CORE->updateViewMat();
 
+	printf("EYE : %.2f %.2f %.2f \AT : %.2f %.2f %.2f\n", 
+		m_tCamera.vEYE.x + m_tCamera.vAT.x, m_tCamera.vEYE.y + m_tCamera.vAT.y, m_tCamera.vEYE.z + m_tCamera.vAT.z,
+		m_tCamera.vAT.x, m_tCamera.vAT.y, m_tCamera.vAT.z);
+
 	// set Player Dir to zero
-	Player::setDirZero();
+	m_pPlayer->setDirZero();
 }
 
 void Scene::draw(unsigned int shaderNum, int textureBind)
@@ -94,18 +150,21 @@ void Scene::draw(unsigned int shaderNum, int textureBind)
 	//m_pWall[3]->draw(shaderNum, textureBind);
 
 	m_pPlayer->draw(shaderNum, textureBind);
-
-	//m_pPortal[0]->draw(shaderNum, textureBind);
-	//m_pPortal[1]->draw(shaderNum, textureBind);
 }
 
 void Scene::drawPortal(unsigned int shaderNum, int textureBind)
 {
-	if (m_iPortalNum < 2) return;
+	for (int i = 0; i < 2; ++i) {
+		if (!m_pPortal[i]) {
+			if (m_pPortal[i]) m_pPortal[i]->draw(shaderNum, textureBind);
+			return;
+		}
+	}
 
 	glClearStencil(0);
 	glEnable(GL_STENCIL_TEST);
 	glClear(GL_STENCIL_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < 2; ++i) {
 		// draw portal at stensil buffer
@@ -133,15 +192,25 @@ void Scene::drawPortal(unsigned int shaderNum, int textureBind)
 		draw(shaderNum, textureBind);
 
 	}
-	//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	//glDepthMask(GL_TRUE);
-
-
-	//glStencilFunc(GL_LEQUAL, 1, 0xFF);
-
 	glDisable(GL_STENCIL_TEST);
+	
+
+	// cant overrite
+	GLboolean colorMasks[4];
+	GLboolean depthMask;
+	glGetBooleanv(GL_COLOR_WRITEMASK, colorMasks);
+	glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glDepthMask(GL_TRUE);
 
 	CORE->updateViewMat();
+	for (int i = 0; i < 2; ++i)
+		m_pPortal[i]->draw(shaderNum, textureBind);
+
+	glColorMask(colorMasks[0], colorMasks[1], colorMasks[2], colorMasks[3]);
+	glDepthMask(depthMask);
+
+	
 }
 
 void Scene::activeDragging(bool active, POINT pt)
