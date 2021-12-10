@@ -43,12 +43,15 @@ public:
 	void draw(unsigned int shaderNum, int textureBind);
 
 	void setDirZero();
+	void setDir(glm::vec3 newFow);
 	void setForward(glm::vec3 newFow);
 
+	glm::vec3 getDir() const;
 	glm::vec3 getFoward() const;
 
 public:
 	void moveBack(glm::vec3 backHow);
+	void moveLittle(float deltaTime);
 
 };
 

@@ -26,6 +26,7 @@ bool Single::init(int argc, char* argv[], int sizex, int sizey)
 {
 	CORE->m_tWndSize = { sizex, sizey };
 
+
 	// Initialize Window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -57,6 +58,7 @@ bool Single::init(int argc, char* argv[], int sizex, int sizey)
 	glutMotionFunc(mouseMove);
 	glutMouseFunc(mouseAct);
 	glutMouseWheelFunc(mouseWheel);
+	glutPassiveMotionFunc(mouseMoving);
 
 	glutIdleFunc(gameLoop);
 
@@ -117,7 +119,7 @@ void Single::initializeProgram()
 	m_pMainShader->setMat4("viewTransform", viewTransform);
 
 	// light pos;
-	glm::vec3 viewPos = m_pScene->m_tCamera.vEYE;
+	glm::vec3 viewPos = m_pScene->m_tCamera.getSight();
 	m_vLightPos = glm::vec3(25.0f);
 	m_vLightColor = glm::vec3(1.0f);
 
@@ -156,7 +158,7 @@ void Single::updateViewMat()
 	// main
 	m_pMainShader->use();
 	m_pMainShader->setMat4("viewTransform", viewTransform);
-	m_pMainShader->setVec3("viewPos", m_pScene->m_tCamera.vEYE * m_pScene->m_tCamera.scroll);
+	m_pMainShader->setVec3("viewPos", m_pScene->m_tCamera.getSight());
 
 	// cube
 	m_pCubeShader->use();
@@ -208,7 +210,7 @@ void Single::drawScene()
 	// draw all
 	CORE->m_pMainShader->use();
 	CORE->m_pDepthMap->bindTexture(0);
-	CORE->m_pScene->draw(CORE->m_pMainShader->getProgram(), 1);
+	CORE->m_pScene->draw(CORE->m_pMainShader->getProgram(), 1, true);
 	//--------------------------------------------------------------
 	CORE->drawSkyCube();
 
@@ -244,6 +246,13 @@ void Single::mouseMove(int x, int y)
 	CORE->updateViewMat();
 }
 
+void Single::mouseMoving(int x, int y)
+{
+	if (!CORE->m_bHideCursor) return;
+	CORE->m_pScene->moveMouse({ x,y }, true);
+	CORE->updateViewMat();
+}
+
 void Single::mouseWheel(int wheel, int dir, int x, int y)
 {
 	CORE->m_pScene->scrollMouse(dir);
@@ -261,6 +270,15 @@ void Single::keyboardChecker(unsigned char key, int x, int y)
 	case 'f':
 	case 'F':
 		printf("%f\n", 1.0 / CORE->m_pTimer->getDeltaTime());
+		break;
+
+	case 'p':
+		glutSetCursor(GLUT_CURSOR_NONE);
+		CORE->m_bHideCursor = true;
+		break;
+	case 'P':
+		glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+		CORE->m_bHideCursor = false;
 		break;
 	}
 }

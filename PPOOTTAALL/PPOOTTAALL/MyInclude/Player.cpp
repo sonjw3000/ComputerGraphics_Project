@@ -142,13 +142,29 @@ void Player::setForward(glm::vec3 newFow)
 	m_vForward = newFow;
 }
 
+void Player::setDir(glm::vec3 dir)
+{
+	m_vDir = dir;
+}
+
 glm::vec3 Player::getFoward() const 
 {
 	return m_vForward;
 }
 
+glm::vec3 Player::getDir() const
+{
+	return m_vDir;
+}
+
 void Player::moveBack(glm::vec3 backHow)
 {
 	this->setTranslate(m_vPivot - backHow);
+}
+
+void Player::moveLittle(float deltaTime)
+{
+	//m_vPivot += m_vForward;
+	setTranslate(m_vPivot + m_vDir * deltaTime * 15.0f);
 }
 

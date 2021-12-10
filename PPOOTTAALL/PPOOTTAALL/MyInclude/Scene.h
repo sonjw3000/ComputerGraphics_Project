@@ -23,9 +23,6 @@ private:
 
 	Player* m_pPlayer;
 
-private:
-	int m_iPortalNum = 2;
-
 public:
 	Scene() = delete;
 	Scene(int sceneNum, CameraVectors& cam);
@@ -34,7 +31,7 @@ public:
 public:
 	void input();
 	void update(float frameTime);
-	void draw(unsigned int shaderNum, int textureBind);
+	void draw(unsigned int shaderNum, int textureBind, bool main = false);
 
 	void drawPortal(unsigned int shaderNum, int textureBind);
 	
@@ -42,7 +39,7 @@ public:
 	// mouseAct
 	void activeDragging(bool active, POINT pt);
 	// movesMove
-	void moveMouse(POINT pt);
+	void moveMouse(POINT pt, bool hideMode = false);
 	// mouseWheel
 	void scrollMouse(int dir);
 

@@ -58,8 +58,11 @@ private:
 	CubeMap* m_pSkyCube;
 	DepthMap* m_pDepthMap;
 
-private:
+public:
 	void drawSkyCube();
+
+private:
+	bool m_bHideCursor = false;
 
 private:
 	glm::vec3 m_vLightPos;
@@ -71,6 +74,7 @@ private:
 	static void reshape(int w, int h);
 	static void mouseAct(int key, int state, int x, int y);
 	static void mouseMove(int x, int y);
+	static void mouseMoving(int x, int y);
 	static void mouseWheel(int wheel, int dir, int x, int y);
 	static void keyboardChecker(unsigned char key, int x, int y);
 

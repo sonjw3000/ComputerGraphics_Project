@@ -17,5 +17,13 @@ void Plane::draw(unsigned int shaderNum, int bindTex)
 	m_pTexture->bindTexture(bindTex);
 	this->uniformModelingMat(shaderNum);
 	Mesh::draw();
+
+#ifdef _DEBUG		// bounding box
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	uniformModelingMat(shaderNum);
+	Mesh::draw();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+#endif
 }
 

@@ -41,4 +41,7 @@ public:
 		return fpsMode ? glm::lookAt(vEYE, vEYE + vAT, vUP) : glm::lookAt((vEYE  * scroll) + vAT, vAT, vUP);
 	}
 
+	glm::vec3 getSight() const {
+		return fpsMode ? vEYE : (vEYE * scroll) + vAT;
+	}
 };
