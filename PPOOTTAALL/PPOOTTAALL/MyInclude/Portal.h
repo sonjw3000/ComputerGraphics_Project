@@ -16,5 +16,6 @@ public:
 
 public:
 	void draw(unsigned int shaderNum, int bindTex);
+
 };
 

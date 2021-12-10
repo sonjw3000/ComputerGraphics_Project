@@ -194,6 +194,28 @@ void Single::drawScene()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	// draw all
+	// first should draw portal
+	// stensil buffer will do
+
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glDepthMask(GL_FALSE);
+	glStencilFunc(GL_NEVER, 0, 0xFF);
+	glStencilOp(GL_INCR, GL_KEEP, GL_KEEP);					// draw 1s when test failed
+
+	CORE->m_pMainShader->use();
+	CORE->m_pDepthMap->bindTexture(0);
+
+	// draw stencil pattern
+	glClear(GL_STENCIL_BUFFER_BIT);
+
+	// portal draw
+	CORE->m_pScene->drawPortal(CORE->m_pMainShader->getProgram(), 1);
+
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDepthMask(GL_TRUE);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+	// draw all
 	CORE->m_pMainShader->use();
 	CORE->m_pDepthMap->bindTexture(0);
 	CORE->m_pScene->draw(CORE->m_pMainShader->getProgram(), 1);

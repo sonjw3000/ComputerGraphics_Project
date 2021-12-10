@@ -56,10 +56,12 @@ public:
 private:
 	Mesh* m_pCube;
 	CubeMap* m_pSkyCube;
+	DepthMap* m_pDepthMap;
+
+private:
 	void drawSkyCube();
 
 private:
-	DepthMap* m_pDepthMap;
 	glm::vec3 m_vLightPos;
 	glm::vec3 m_vLightColor;
 

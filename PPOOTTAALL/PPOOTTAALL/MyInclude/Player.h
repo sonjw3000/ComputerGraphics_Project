@@ -26,6 +26,10 @@ private:
 
 public:
 
+private:
+	glm::vec3 m_vLeftRot;
+	glm::vec3 m_vRightRot;
+	glm::vec3 m_vBackRot;
 
 private:
 	static glm::vec3 m_vDir;

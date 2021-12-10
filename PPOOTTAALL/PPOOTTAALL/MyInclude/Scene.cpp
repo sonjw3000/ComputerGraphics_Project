@@ -89,6 +89,10 @@ void Scene::draw(unsigned int shaderNum, int textureBind)
 
 }
 
+void Scene::drawPortal(unsigned int shaderNum, int textureBind)
+{
+}
+
 void Scene::activeDragging(bool active, POINT pt)
 {
 	m_bDragging = active;
@@ -110,4 +114,15 @@ void Scene::scrollMouse(int dir)
 {
 	if (dir > 0) m_tCamera.scroll -= m_tCamera.scroll / 10;
 	else m_tCamera.scroll += m_tCamera.scroll / 10;
+}
+
+glm::mat4 Scene::getPortalView(Portal* from, Portal* dist)
+{
+	glm::mat4 temp = m_tCamera.getViewMat() * from->getModelTransform();
+	glm::mat4 portalCam =
+		temp *
+		glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
+		glm::inverse(dist->getModelTransform());
+
+	return portalCam;
 }

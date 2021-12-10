@@ -4,11 +4,12 @@
 
 glm::vec3 Player::m_vDir = glm::vec3(0.0f);
 glm::vec3 Player::m_vForward = glm::vec3(0.0f, 0.0f, 1.0f);
-static glm::vec3 LlegRot, RlegRot = glm::vec3(-30, 0, 0), BlegRot = glm::vec3(15, 0, 0);
-bool LlegDir, RlegDir, BlegDir;
 
 Player::Player(float size, glm::vec3 pivot) :
-	Mesh("Objs/Cube.obj", glm::vec3(1.0f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size)
+	Mesh("Objs/Cube.obj", glm::vec3(1.0f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size),
+	m_vRightRot(glm::vec3(0.0f)),
+	m_vLeftRot(glm::vec3(0.0f)),
+	m_vBackRot(glm::vec3(0.0f))
 {
 	m_pBody = new Mesh("Objs/body.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
 	m_pLeftLeg = new Mesh("Objs/legLeft.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
@@ -41,57 +42,43 @@ void Player::input(char key)
 	}
 
 	m_vDir = glm::normalize(m_vDir + dir);
-
-	if (LlegDir) {
-		LlegRot.x += 2;
-		if (LlegRot.x > 0) {
-			LlegDir = false;
-		}
-	}
-	else {
-		LlegRot.x -= 2;
-		if (LlegRot.x < -30) {
-			LlegDir = true;
-		}
-	}
-
-	if (RlegDir) {
-		RlegRot.x -= 2;
-		if (RlegRot.x < -30) {
-			RlegDir = false;
-		}
-	}
-	else {
-		RlegRot.x += 2;
-		if (RlegRot.x > 0) {
-			RlegDir = true;
-		}
-	}
-
-	if (BlegDir) {
-		BlegRot.x += 2;
-		if (BlegRot.x > 30) {
-			BlegDir = false;
-		}
-	}
-	else {
-		BlegRot.x -= 2;
-		if (BlegRot.x < 0) {
-			BlegDir = true;
-		}
-	}
-
 }
 
 void Player::update(float deltaTime)
 {
 	static float fMoveSpeed = 5.0f;
+	static float fRotateSpeed = 360.0f;
+	static bool bIncreaseFront = true;
+	static bool bIncreaseBack = false;
 
 	glm::vec3 offset = m_vDir * fMoveSpeed * deltaTime;
 	this->setTranslate(m_vPivot + offset);
-	m_meLeftLeg->setRotate(LlegRot);
-	m_meRightLeg->setRotate(RlegRot);
-	m_meBackLeg->setRotate(BlegRot);
+
+	// if moved
+	if (glm::length(m_vDir)) {
+		float rotSpeed = fRotateSpeed * deltaTime;
+
+		printf("hello %f\n", rotSpeed);
+
+		m_vRightRot.x += (1 - 2 * bIncreaseFront) * rotSpeed;
+		m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * rotSpeed;
+		m_vBackRot.x += (1 - 2 * bIncreaseBack) * rotSpeed;
+
+		if (abs(m_vLeftRot.x) >= 30.0f) {
+			bIncreaseFront = !bIncreaseFront;
+			m_vRightRot.x += (1 - 2 * bIncreaseFront) * rotSpeed;
+			m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * rotSpeed;
+		}
+
+		if (abs(m_vBackRot.x) >= 15.0f) {
+			bIncreaseBack = !bIncreaseBack;
+			m_vBackRot.x += (1 - 2 * bIncreaseBack) * rotSpeed;
+		}
+
+		m_pLeftLeg->setRotate(m_vLeftRot);
+		m_pRightLeg->setRotate(m_vRightRot);
+		m_pBackLeg->setRotate(m_vBackRot);
+	}
 }
 
 void Player::draw(unsigned int shaderNum, int textureBind)
