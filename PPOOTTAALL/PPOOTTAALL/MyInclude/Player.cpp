@@ -9,12 +9,13 @@ Player::Player(float size, glm::vec3 pivot) :
 	Mesh("Objs/Cube.obj", glm::vec3(1.0f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size),
 	m_vRightRot(glm::vec3(0.0f)),
 	m_vLeftRot(glm::vec3(0.0f)),
-	m_vBackRot(glm::vec3(0.0f))
+	m_vBackRot(glm::vec3(20.0f,0.0f,0.0f))
 {
-	m_pBody = new Mesh("Objs/body.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
-	m_pLeftLeg = new Mesh("Objs/legLeft.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
-	m_pRightLeg = new Mesh("Objs/legRight.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
-	m_pBackLeg = new Mesh("Objs/legBack.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
+	m_pBody = new Mesh("Objs/body.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 2.0f, 0.0f) * size);
+	m_pLeftLeg = new Mesh("Objs/legLeft.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 2.0f, 0.0f) * size);
+	m_pRightLeg = new Mesh("Objs/legRight.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 2.0f, 0.0f) * size);
+	m_pBackLeg = new Mesh("Objs/legBack.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 2.0f, 0.0f) * size);
+	m_pGun = new Mesh("Objs/potalgun.obj", glm::vec3(0.0625f) * size, glm::vec3(0.0f,180.0f,0.0f), pivot + glm::vec3(-1.5f, 3.5f, 0.0f) * size);
 
 	m_pTextureBody = new TextureClass("Texture/Player/body_texture.jpg");
 	//m_pTextureLeg = new TextureClass("Texture/Player/leg_texture.jpg");
@@ -29,6 +30,8 @@ Player::~Player()
 	delete m_pLeftLeg;
 	delete m_pRightLeg;
 	delete m_pBackLeg;
+
+	delete m_pGun;
 }
 
 void Player::input(char key)
@@ -70,7 +73,7 @@ void Player::update(float deltaTime)
 			m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * rotSpeed;
 		}
 
-		if (abs(m_vBackRot.x) >= 15.0f) {
+		if (abs(m_vBackRot.x) >= 30.0f) {
 			bIncreaseBack = !bIncreaseBack;
 			m_vBackRot.x += (1 - 2 * bIncreaseBack) * rotSpeed;
 		}
@@ -110,6 +113,10 @@ void Player::draw(unsigned int shaderNum, int textureBind)
 	modeling = this->m_mSRTModel * m_pBackLeg->getModelTransform();
 	glUniformMatrix4fv(glGetUniformLocation(shaderNum, "modelTransform"), 1, GL_FALSE, glm::value_ptr(modeling));
 	m_pBackLeg->draw();
+
+	modeling = this->m_mSRTModel * m_pGun->getModelTransform();
+	glUniformMatrix4fv(glGetUniformLocation(shaderNum, "modelTransform"), 1, GL_FALSE, glm::value_ptr(modeling));
+	m_pGun->draw();
 	//Mesh::draw();
 }
 

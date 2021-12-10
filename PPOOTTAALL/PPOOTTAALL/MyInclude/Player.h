@@ -16,6 +16,8 @@ private:
 	Mesh* m_pLeftLeg;
 	Mesh* m_pRightLeg;
 	Mesh* m_pBackLeg;
+
+	Mesh* m_pGun;
 public:
 	Player() = delete;
 	Player(float size, glm::vec3 pivot);

@@ -18,6 +18,9 @@ public:
 
 private:
 	Plane* m_pPlane;
+	Plane* m_pWall[4];
+	Portal* m_pPortal[2];
+
 	Player* m_pPlayer;
 
 private:
