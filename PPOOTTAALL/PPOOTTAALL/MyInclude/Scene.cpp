@@ -1,4 +1,5 @@
 #include "Core.h"
+#include "ShaderProgram.h"
 #include "Scene.h"
 #include "Plane.h"
 #include "Player.h"
@@ -84,13 +85,53 @@ void Scene::draw(unsigned int shaderNum, int textureBind)
 
 	m_pPlayer->draw(shaderNum, textureBind);
 
-	m_pPortal[0]->draw(shaderNum, textureBind);
-	m_pPortal[1]->draw(shaderNum, textureBind);
-
+	//m_pPortal[0]->draw(shaderNum, textureBind);
+	//m_pPortal[1]->draw(shaderNum, textureBind);
 }
 
 void Scene::drawPortal(unsigned int shaderNum, int textureBind)
 {
+	if (m_iPortalNum < 2) return;
+
+	glClearStencil(0);
+	glEnable(GL_STENCIL_TEST);
+	glClear(GL_STENCIL_BUFFER_BIT);
+
+	for (int i = 0; i < 2; ++i) {
+		// draw portal at stensil buffer
+		glClearStencil(0);
+		glStencilFunc(GL_NEVER, 0, 0);				// every fragment cant pass test
+		glStencilOp(GL_INCR, GL_INCR, GL_INCR);		// always fail, 
+
+		// draw in stensil buffer
+		CORE->updateViewMat();
+		CORE->m_pMainShader->use();
+
+		m_pPortal[i]->draw(shaderNum, textureBind);
+
+		// move camera to back of the portal
+		glm::mat4 viewMat = getPortalView(m_pPortal[i], m_pPortal[!i]);
+		CORE->m_pCubeShader->setMat4("viewTransform", viewMat);
+		CORE->m_pMainShader->setMat4("viewTransform", viewMat);
+		CORE->m_pMainShader->setVec3("viewPos", m_pPortal[i]->getTranslateVec());
+
+		// change stensil testing mode
+		// draw objs on restricted area
+		glStencilFunc(GL_LEQUAL, 1, 0xff);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+		draw(shaderNum, textureBind);
+
+	}
+	//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	//glDepthMask(GL_TRUE);
+
+
+	//glStencilFunc(GL_LEQUAL, 1, 0xFF);
+
+	glDisable(GL_STENCIL_TEST);
+
+	CORE->updateViewMat();
 }
 
 void Scene::activeDragging(bool active, POINT pt)

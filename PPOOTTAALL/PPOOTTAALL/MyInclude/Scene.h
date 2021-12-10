@@ -18,9 +18,11 @@ public:
 
 private:
 	Plane* m_pPlane;
-	Portal* m_pPortal[2];
-
 	Player* m_pPlayer;
+
+private:
+	Portal* m_pPortal[2];
+	int m_iPortalNum = 2;
 
 public:
 	Scene() = delete;

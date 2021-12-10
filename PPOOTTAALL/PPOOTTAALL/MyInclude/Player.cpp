@@ -58,7 +58,7 @@ void Player::update(float deltaTime)
 	if (glm::length(m_vDir)) {
 		float rotSpeed = fRotateSpeed * deltaTime;
 
-		printf("hello %f\n", rotSpeed);
+		//printf("hello %f\n", rotSpeed);
 
 		m_vRightRot.x += (1 - 2 * bIncreaseFront) * rotSpeed;
 		m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * rotSpeed;
@@ -127,6 +127,4 @@ void Player::moveBack(glm::vec3 backHow)
 {
 	this->setTranslate(m_vPivot - backHow);
 }
-
-
 

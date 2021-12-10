@@ -29,7 +29,7 @@ private:
 	SIZE m_tWndSize;
 	Timer* m_pTimer;
 
-private:
+public:
 	ShaderProgram* m_pMainShader;
 	ShaderProgram* m_pCubeShader;
 	ShaderProgram* m_pShadowShader;

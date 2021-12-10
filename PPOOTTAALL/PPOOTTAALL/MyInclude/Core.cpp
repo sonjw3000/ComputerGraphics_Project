@@ -48,6 +48,7 @@ bool Single::init(int argc, char* argv[], int sizex, int sizey)
 
 	// Enable Depth Test
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
 
 	// Callback Functions
 	glutDisplayFunc(drawScene);
@@ -149,7 +150,6 @@ void Single::initializeProgram()
 
 void Single::updateViewMat()
 {
-
 	glm::mat4 viewTransform = m_pScene->m_tCamera.getViewMat();
 
 	// view mat
@@ -191,29 +191,19 @@ void Single::drawScene()
 	glCullFace(GL_BACK);
 	glViewport(0, 0, CORE->m_tWndSize.cx, CORE->m_tWndSize.cy);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	
 	// draw all
 	// first should draw portal
-	// stensil buffer will do
-
-	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-	glDepthMask(GL_FALSE);
-	glStencilFunc(GL_NEVER, 0, 0xFF);
-	glStencilOp(GL_INCR, GL_KEEP, GL_KEEP);					// draw 1s when test failed
-
+	// stensil buffer
 	CORE->m_pMainShader->use();
 	CORE->m_pDepthMap->bindTexture(0);
 
 	// draw stencil pattern
-	glClear(GL_STENCIL_BUFFER_BIT);
+	//glClear(GL_STENCIL_BUFFER_BIT);
 
 	// portal draw
 	CORE->m_pScene->drawPortal(CORE->m_pMainShader->getProgram(), 1);
-
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDepthMask(GL_TRUE);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
 	// draw all
 	CORE->m_pMainShader->use();
