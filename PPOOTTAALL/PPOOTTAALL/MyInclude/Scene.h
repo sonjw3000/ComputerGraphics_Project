@@ -24,7 +24,6 @@ private:
 	Player* m_pPlayer;
 
 private:
-	Portal* m_pPortal[2];
 	int m_iPortalNum = 2;
 
 public:
