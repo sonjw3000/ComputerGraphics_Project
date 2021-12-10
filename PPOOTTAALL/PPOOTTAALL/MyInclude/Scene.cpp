@@ -5,14 +5,19 @@
 #include "RotatingCube.h"
 #include "Portal.h"
 
-Scene::Scene(int sceneNum, CameraVectors& cam)
+Scene::Scene(int sceneNum, CameraVectors& cam) :
+	m_pPortal{nullptr, nullptr},
+	m_pPlane(nullptr),
+	m_iSceneNum(sceneNum)
 {
-	m_iSceneNum = sceneNum;
-
 	m_tCamera = cam;
 
 	m_pPlane = new Plane("Objs/Cube.obj", glm::vec3(50.0f, 0.1f, 50.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
 	m_pPlayer = new Player(1.0f, glm::vec3(0.0f));
+
+	m_pPortal[0] = new Portal(5.0f, 0, glm::vec3(10.0f, 0.0f, 0.0f));
+	m_pPortal[1] = new Portal(5.0f, 2, glm::vec3(0.0f, 0.0f, 10.0f));
+
 	switch (sceneNum) {
 	case 0:
 		break;
@@ -78,6 +83,9 @@ void Scene::draw(unsigned int shaderNum, int textureBind)
 	m_pPlane->draw(shaderNum, textureBind);
 
 	m_pPlayer->draw(shaderNum, textureBind);
+
+	m_pPortal[0]->draw(shaderNum, textureBind);
+	m_pPortal[1]->draw(shaderNum, textureBind);
 
 }
 

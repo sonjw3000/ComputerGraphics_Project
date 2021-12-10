@@ -97,7 +97,7 @@
       <Filter>소스 파일\Timer</Filter>
     </ClCompile>
     <ClCompile Include="MyInclude\Portal.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Mesh\Portal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +144,7 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="MyInclude\Portal.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일\Mesh\Portal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
