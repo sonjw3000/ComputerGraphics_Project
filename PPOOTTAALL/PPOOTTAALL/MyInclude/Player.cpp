@@ -5,8 +5,14 @@
 glm::vec3 Player::m_vDir = glm::vec3(0.0f);
 glm::vec3 Player::m_vForward = glm::vec3(0.0f, 0.0f, 1.0f);
 
+static glm::vec3 LlegRot, RlegRot = glm::vec3(-30, 0, 0), BlegRot = glm::vec3(15, 0, 0);
+bool LlegDir, RlegDir, BlegDir;
+
 Player::Player(float size, glm::vec3 pivot) :
-	Mesh("Objs/Cube.obj", glm::vec3(1.0f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size)
+	Mesh("Objs/Cube.obj", glm::vec3(1.0f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size),
+	m_vLeftRot(glm::vec3()),
+	m_vRightRot(glm::vec3()),
+	m_vBackRot(glm::vec3(15.0f, 0.0f, 0.0f))
 {
 	m_pBody = new Mesh("Objs/body.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
 	m_pLeftLeg = new Mesh("Objs/legLeft.obj", glm::vec3(0.125f) * size, glm::vec3(0.0f), pivot + glm::vec3(0.0f, 1.5f, 0.0f) * size);
@@ -15,6 +21,7 @@ Player::Player(float size, glm::vec3 pivot) :
 
 	m_pTextureBody = new TextureClass("Texture/Player/body_texture.jpg");
 	//m_pTextureLeg = new TextureClass("Texture/Player/leg_texture.jpg");
+
 }
 
 Player::~Player()
@@ -31,7 +38,6 @@ Player::~Player()
 void Player::input(char key)
 {
 	glm::vec3 dir(0.0f);
-
 	switch (key) {
 	case 'w':	dir = m_vForward;	break;
 	case 's':	dir = -m_vForward;	break;
@@ -45,9 +51,57 @@ void Player::input(char key)
 void Player::update(float deltaTime)
 {
 	static float fMoveSpeed = 5.0f;
+	static float fRotateSpeed = 180.0f;
 
 	glm::vec3 offset = m_vDir * fMoveSpeed * deltaTime;
 	this->setTranslate(m_vPivot + offset);
+
+	if (glm::length(m_vDir)) {
+		LlegRot.x += fRotateSpeed * deltaTime;
+		if (LlegRot.x > 0) {
+			LlegDir = false;
+		}
+	}
+
+	
+
+	
+	else {
+		LlegRot.x -= 2;
+		if (LlegRot.x < -30) {
+			LlegDir = true;
+		}
+	}
+
+	if (RlegDir) {
+		RlegRot.x -= 2;
+		if (RlegRot.x < -30) {
+			RlegDir = false;
+		}
+	}
+	else {
+		RlegRot.x += 2;
+		if (RlegRot.x > 0) {
+			RlegDir = true;
+		}
+	}
+
+	if (BlegDir) {
+		BlegRot.x += 2;
+		if (BlegRot.x > 30) {
+			BlegDir = false;
+		}
+	}
+	else {
+		BlegRot.x -= 2;
+		if (BlegRot.x < 0) {
+			BlegDir = true;
+		}
+	}
+
+	m_pLeftLeg->setRotate(LlegRot);
+	m_pRightLeg->setRotate(RlegRot);
+	m_pBackLeg->setRotate(BlegRot);
 }
 
 void Player::draw(unsigned int shaderNum, int textureBind)

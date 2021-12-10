@@ -19,6 +19,8 @@ Portal::Portal(float size, int faceNum, glm::vec3 translate) :
 		break;
 	}
 
+	m_tCameraVectors.vEYE = m_vPivot;
+
 	setRotate(rot);
 
 }
@@ -35,4 +37,11 @@ void Portal::draw(unsigned int shaderNum, int bindTex)
 	this->uniformModelingMat(shaderNum);
 	Mesh::draw();
 
+}
+
+glm::mat4 Portal::getPortalView(glm::mat4& originView, glm::vec3 from)
+{
+	glm::mat4 temp = originView * this->m_mSRTModel;
+
+	return glm::mat4();
 }

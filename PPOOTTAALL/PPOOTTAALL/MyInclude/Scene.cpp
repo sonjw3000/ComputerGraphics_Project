@@ -59,17 +59,12 @@ void Scene::update(float frameTime)
 
 	//----------------------------------------------
 	// collide check
-	// player - floor
 
 
-	// player - rotating cube
 
 
-	// player button?
 
-	// player sleeping palyer
-
-	// camera update by player[0]
+	// camera update
 	m_tCamera.vAT = m_pPlayer->getTranslateVec();
 	CORE->updateViewMat();
 
@@ -80,6 +75,8 @@ void Scene::update(float frameTime)
 void Scene::draw(unsigned int shaderNum, int textureBind)
 {
 	// draw all
+	//if (shaderNum == CORE->)
+
 	m_pPlane->draw(shaderNum, textureBind);
 
 	m_pPlayer->draw(shaderNum, textureBind);
@@ -87,6 +84,12 @@ void Scene::draw(unsigned int shaderNum, int textureBind)
 	m_pPortal[0]->draw(shaderNum, textureBind);
 	m_pPortal[1]->draw(shaderNum, textureBind);
 
+}
+
+void Scene::drawPortals(unsigned int shaderNum, int textureBind)
+{
+	// draw portal heref
+	//if()
 }
 
 void Scene::activeDragging(bool active, POINT pt)
@@ -110,4 +113,15 @@ void Scene::scrollMouse(int dir)
 {
 	if (dir > 0) m_tCamera.scroll -= m_tCamera.scroll / 10;
 	else m_tCamera.scroll += m_tCamera.scroll / 10;
+}
+
+glm::mat4 Scene::getPortalView(Portal* from, Portal* dist)
+{
+	glm::mat4 temp = m_tCamera.getViewMat() * from->getModelTransform();
+	glm::mat4 portalCam = 
+		temp * 
+		glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
+		glm::inverse(dist->getModelTransform());
+
+	return portalCam;
 }

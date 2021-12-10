@@ -16,6 +16,7 @@ private:
 	Mesh* m_pLeftLeg;
 	Mesh* m_pRightLeg;
 	Mesh* m_pBackLeg;
+
 public:
 	Player() = delete;
 	Player(float size, glm::vec3 pivot);
@@ -24,8 +25,10 @@ public:
 private:
 	bool m_bAlive = false;
 
-public:
-
+private:
+	glm::vec3 m_vLeftRot;
+	glm::vec3 m_vRightRot;
+	glm::vec3 m_vBackRot;
 
 private:
 	static glm::vec3 m_vDir;

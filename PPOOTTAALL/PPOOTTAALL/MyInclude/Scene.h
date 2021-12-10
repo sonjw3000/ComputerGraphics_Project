@@ -31,6 +31,7 @@ public:
 	void input();
 	void update(float frameTime);
 	void draw(unsigned int shaderNum, int textureBind);
+	void drawPortals(unsigned int shaderNum, int textureBind);
 	
 public:
 	// mouseAct
@@ -40,7 +41,7 @@ public:
 	// mouseWheel
 	void scrollMouse(int dir);
 
-public:
-
+private:
+	glm::mat4 getPortalView(Portal* from, Portal* dist);
 };
 
