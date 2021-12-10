@@ -4,8 +4,6 @@
 
 glm::vec3 Player::m_vDir = glm::vec3(0.0f);
 glm::vec3 Player::m_vForward = glm::vec3(0.0f, 0.0f, 1.0f);
-static glm::vec3 LlegRot, RlegRot = glm::vec3(-30, 0, 0), BlegRot = glm::vec3(15, 0, 0);
-bool LlegDir, RlegDir, BlegDir;
 
 Player::Player(float size, glm::vec3 pivot) :
 	Mesh("Objs/Cube.obj", glm::vec3(1.0f) * size, glm::vec3(0.0f), (pivot)+glm::vec3(0.0f, 0.5f, 0.0f) * size)
@@ -33,6 +31,7 @@ Player::~Player()
 void Player::input(char key)
 {
 	glm::vec3 dir(0.0f);
+
 	switch (key) {
 	case 'w':	dir = m_vForward;	break;
 	case 's':	dir = -m_vForward;	break;
@@ -41,46 +40,6 @@ void Player::input(char key)
 	}
 
 	m_vDir = glm::normalize(m_vDir + dir);
-
-	if (LlegDir) {
-		LlegRot.x += 2;
-		if (LlegRot.x > 0) {
-			LlegDir = false;
-		}
-	}
-	else {
-		LlegRot.x -= 2;
-		if (LlegRot.x < -30) {
-			LlegDir = true;
-		}
-	}
-
-	if (RlegDir) {
-		RlegRot.x -= 2;
-		if (RlegRot.x < -30) {
-			RlegDir = false;
-		}
-	}
-	else {
-		RlegRot.x += 2;
-		if (RlegRot.x > 0) {
-			RlegDir = true;
-		}
-	}
-
-	if (BlegDir) {
-		BlegRot.x += 2;
-		if (BlegRot.x > 30) {
-			BlegDir = false;
-		}
-	}
-	else {
-		BlegRot.x -= 2;
-		if (BlegRot.x < 0) {
-			BlegDir = true;
-		}
-	}
-
 }
 
 void Player::update(float deltaTime)
@@ -89,9 +48,6 @@ void Player::update(float deltaTime)
 
 	glm::vec3 offset = m_vDir * fMoveSpeed * deltaTime;
 	this->setTranslate(m_vPivot + offset);
-	m_meLeftLeg->setRotate(LlegRot);
-	m_meRightLeg->setRotate(RlegRot);
-	m_meBackLeg->setRotate(BlegRot);
 }
 
 void Player::draw(unsigned int shaderNum, int textureBind)
