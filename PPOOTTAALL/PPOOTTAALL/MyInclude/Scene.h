@@ -20,12 +20,13 @@ public:
 private:
 	Plane* m_pFloor;
 	std::vector<Plane*> m_pWalls;
+	std::vector<Plane*> m_pGlasses;
 	Portal* m_pPortal[2];
 	std::vector<Plane*> m_pPortalWalls;
 
 	Player* m_pPlayer;
 
-	Cube* m_pCube[2];
+	std::vector<Cube*> m_pCubes;
 
 public:
 	Scene() = delete;
