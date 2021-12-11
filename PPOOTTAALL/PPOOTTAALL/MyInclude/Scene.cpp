@@ -76,8 +76,6 @@ void Scene::input()
 		glm::vec3 temp = m_pPlayer->getTranslateVec();
 		printf("%.2f %.2f %.2f\n", temp.x, temp.y, temp.z);
 	}
-		
-
 	
 }
 
@@ -114,10 +112,9 @@ void Scene::update(float frameTime)
 	glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
 	glm::vec3 planeMin = m_pFloor->getTranslateVec() - m_pFloor->getScaleVec() / 2.0f;
 	glm::vec3 planeMax = m_pFloor->getTranslateVec() + m_pFloor->getScaleVec() / 2.0f;
-	if (aabbCollideCheck(playerMin, playerMax, planeMin, planeMax)) {
+	if (aabbCollideCheck(playerMin, playerMax, planeMin, planeMax)) 
 		m_pPlayer->moveBack(glm::vec3(0.0f, playerMin.y - planeMax.y, 0.0f));
-		//printf("hold ");
-	}
+
 
 
 	// player - portal
@@ -187,13 +184,18 @@ void Scene::update(float frameTime)
 			if (aabbCollideCheck((playerPivot - playerSize), (playerPivot + playerSize), (portalPivot - portalSize), (portalPivot + portalSize))) {
 
 				glm::mat4 temp = m_tCamera.getViewMat() * m_pPortal[i]->getModelTransform();
-				glm::mat4 portalCam = getPortalView(m_pPortal[!i], m_pPortal[i]);
+				glm::mat4 portalCam = getPortalView(m_pPortal[i], m_pPortal[!i]);
+
+				glm::vec3 eye(portalCam[3][0], portalCam[3][1], portalCam[3][2]);
+				//eye /= portalCam[3][3];
+
+
 
 				glm::vec3 newPos = -portalCam * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 				//float len = glm::length(newPos);
 				//newPos.y = 0;
 				//newPos = glm::normalize(newPos) * len;
-				printf("%.2f, %.2f, %.2f\n", newPos.x, newPos.y, newPos.z);
+				printf("%.2f, %.2f, %.2f\n", eye.x, eye.y, eye.z);
 
 				//printf("newPos");
 
