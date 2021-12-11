@@ -58,66 +58,179 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 
 	switch (sceneNum) {
 	case 0:
-		// player
-		m_pPlayer->setTranslate(glm::vec3(9.0f, 1.0f, -9.0f));
+		//// player
+		//m_pPlayer->setTranslate(glm::vec3(9.0f, 1.0f, -9.0f));
 
-		// cube
+		//// cube
+		//m_pCubes.push_back(
+		//	new Cube("Objs/PortalCube.obj",
+		//		glm::vec3(0.5f, 0.5f, 0.5f),
+		//		glm::vec3(0.0f), glm::vec3(-9.0f, 5.0f, 7.0f),
+		//		"Texture/PortalCube.jpg"));
+
+		//// portal walls
+		//m_pPortalWalls.push_back(
+		//	new Plane("Objs/Plane.obj", 
+		//		glm::vec3(1.0f, 0.0f, 2.0f), 
+		//		glm::vec3(-90.0f, 0.0f, 0.0f), 
+		//		glm::vec3(4.5f, 1.0f, 9.99f), 
+		//		"Texture/realwhite.png"));
+		//m_pPortalWalls.push_back(
+		//	new Plane("Objs/Plane.obj",
+		//		glm::vec3(1.0f, 0.0f, 2.0f),
+		//		glm::vec3(-90.0f, 0.0f, 0.0f),
+		//		glm::vec3(5.5f, 1.0f, 9.99f),
+		//		"Texture/realwhite.png"));
+		//m_pPortalWalls.push_back(
+		//	new Plane("Objs/Plane.obj",
+		//		glm::vec3(2.0f, 0.0f, 1.0f), 
+		//		glm::vec3(0.0f, 0.0f, -90.0f), 
+		//		glm::vec3(-9.99f, 1.0f, 1.5f), 
+		//		"Texture/realwhite.png"));
+		//m_pPortalWalls.push_back(
+		//	new Plane("Objs/Plane.obj",
+		//		glm::vec3(2.0f, 0.0f, 1.0f),
+		//		glm::vec3(0.0f, 0.0f, -90.0f),
+		//		glm::vec3(-9.99f, 1.0f, 0.5f),
+		//		"Texture/realwhite.png"));
+		//m_pPortalWalls.push_back(
+		//	new Plane("Objs/Plane.obj",
+		//		glm::vec3(2.0f, 0.0f, 1.0f), 
+		//		glm::vec3(0.0f, 0.0f, -90.0f), 
+		//		glm::vec3(-9.99f, 6.0f, 7.5f), 
+		//		"Texture/realwhite.png"));
+		//m_pPortalWalls.push_back(
+		//	new Plane("Objs/Plane.obj",
+		//		glm::vec3(2.0f, 0.0f, 1.0f),
+		//		glm::vec3(0.0f, 0.0f, -90.0f),
+		//		glm::vec3(-9.99f, 6.0f, 6.5f),
+		//		"Texture/realwhite.png"));
+
+		//// wall
+		//m_pWalls.push_back(
+		//	new Plane("Objs/roundPlane.obj",
+		//		glm::vec3(2.0f, 0.0f, 2.0f),
+		//		glm::vec3(0.0f)
+		//		, glm::vec3(9.0f, 0.01f, -9.0f),
+		//		"Texture/realred.png"));
+
+		//// transparent wall
+		//m_pGlasses.push_back(
+		//	new Plane("Objs/Cube.obj",
+		//		glm::vec3(2.0f, 0.1f, 2.0f),
+		//		glm::vec3(0.0f),
+		//		glm::vec3(-9.0f, 4.99f, 7.0f),
+		//		"Texture/alphablue.png"));
+		//m_pGlasses.push_back(
+		//	new Plane("Objs/Cube.obj",
+		//		glm::vec3(1.0f, 0.1f, 20.0f),
+		//		glm::vec3(0.0f, 0.0f, 90.0f),
+		//		glm::vec3(0.0f, 0.5f, 0.0f),
+		//		"Texture/alphablue.png"));
+		//m_pGlasses.push_back(
+		//	new Plane("Objs/Cube.obj"
+		//		, glm::vec3(4.0f, 0.1f, 20.0f),
+		//		glm::vec3(0.0f, 0.0f, 90.0f),
+		//		glm::vec3(0.0f, 3.8f, 0.0f),
+		//		"Texture/alphablue.png"));
+
+		m_pPlayer->setTranslate(glm::vec3(-9.0f, 1.0f, -9.0f));
 		m_pCubes.push_back(
 			new Cube("Objs/PortalCube.obj",
 				glm::vec3(0.5f, 0.5f, 0.5f),
-				glm::vec3(0.0f), glm::vec3(-9.0f, 5.0f, 7.0f),
+				glm::vec3(0.0f),
+				glm::vec3(-9.0f, 8.0f, 7.0f),
 				"Texture/PortalCube.jpg"));
 
 		// portal walls
 		m_pPortalWalls.push_back(
-			new Plane("Objs/Plane.obj", 
-				glm::vec3(2.0f, 0.0f, 2.0f), 
-				glm::vec3(90.0f, 0.0f, 0.0f), 
-				glm::vec3(5.0f, 1.0f, 9.99f), 
+			new Plane("Objs/Plane.obj",
+				glm::vec3(2.0f, 0.0f, 1.0f),
+				glm::vec3(0.0f, 0.0f, -90.0f),
+				glm::vec3(-9.99f, 1.0f, 1.5f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
-				glm::vec3(2.0f, 0.0f, 2.0f), 
-				glm::vec3(0.0f, 0.0f, 90.0f), 
-				glm::vec3(-9.99f, 1.0f, 1.0f), 
+				glm::vec3(2.0f, 0.0f, 1.0f),
+				glm::vec3(0.0f, 0.0f, -90.0f),
+				glm::vec3(-9.99f, 1.0f, 0.5f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
-				glm::vec3(2.0f, 0.0f, 2.0f), 
-				glm::vec3(0.0f, 0.0f, 90.0f), 
-				glm::vec3(-9.99f, 6.0f, 7.0f), 
+				glm::vec3(2.0f, 0.0f, 1.0f),
+				glm::vec3(0.0f, 0.0f, -90.0f),
+				glm::vec3(-9.99f, 9.0f, 7.5f),
+				"Texture/realwhite.png"));
+		m_pPortalWalls.push_back(
+			new Plane("Objs/Plane.obj",
+				glm::vec3(2.0f, 0.0f, 1.0f),
+				glm::vec3(0.0f, 0.0f, -90.0f),
+				glm::vec3(-9.99f, 9.0f, 6.5f),
+				"Texture/realwhite.png"));
+		m_pPortalWalls.push_back(
+			new Plane("Objs/Plane.obj",
+				glm::vec3(2.0f, 0.0f, 1.0f),
+				glm::vec3(0.0f, 0.0f, 90.0f),
+				glm::vec3(9.99f, 9.0f, 7.5f),
+				"Texture/realwhite.png"));
+		m_pPortalWalls.push_back(
+			new Plane("Objs/Plane.obj",
+				glm::vec3(2.0f, 0.0f, 1.0f),
+				glm::vec3(0.0f, 0.0f, 90.0f),
+				glm::vec3(9.99f, 9.0f, 6.5f),
+				"Texture/realwhite.png"));
+		m_pPortalWalls.push_back(
+			new Plane("Objs/Plane.obj",
+				glm::vec3(1.0f, 0.0f, 2.0f)
+				, glm::vec3(-90.0f, 0.0f, 0.0f),
+				glm::vec3(7.5f, 1.0f, 9.99f),
+				"Texture/realwhite.png"));
+		m_pPortalWalls.push_back(
+			new Plane("Objs/Plane.obj",
+				glm::vec3(1.0f, 0.0f, 2.0f)
+				, glm::vec3(-90.0f, 0.0f, 0.0f),
+				glm::vec3(6.5f, 1.0f, 9.99f),
+				"Texture/realwhite.png"));
+		m_pPortalWalls.push_back(
+			new Plane("Objs/Plane.obj"
+				, glm::vec3(1.0f, 0.0f, 2.0f),
+				glm::vec3(90.0f, 0.0f, 0.0f),
+				glm::vec3(7.5f, 7.0f, -9.99f),
+				"Texture/realwhite.png"));
+		m_pPortalWalls.push_back(
+			new Plane("Objs/Plane.obj"
+				, glm::vec3(1.0f, 0.0f, 2.0f),
+				glm::vec3(90.0f, 0.0f, 0.0f),
+				glm::vec3(6.5f, 7.0f, -9.99f),
 				"Texture/realwhite.png"));
 
-		// wall
+		// button
 		m_pWalls.push_back(
 			new Plane("Objs/roundPlane.obj",
 				glm::vec3(2.0f, 0.0f, 2.0f),
-				glm::vec3(0.0f)
-				, glm::vec3(9.0f, 0.01f, -9.0f),
+				glm::vec3(0.0f), glm::vec3(7.0f, 6.0f, -9.0f),
 				"Texture/realred.png"));
 
 		// transparent wall
 		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
 				glm::vec3(2.0f, 0.1f, 2.0f),
-				glm::vec3(0.0f),
-				glm::vec3(-9.0f, 4.99f, 7.0f),
+				glm::vec3(0.0f), glm::vec3(7.0f, 5.99f, -9.0f),
 				"Texture/alphablue.png"));
 		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
-				glm::vec3(1.0f, 0.1f, 20.0f),
-				glm::vec3(0.0f, 0.0f, 90.0f),
-				glm::vec3(0.0f, 0.5f, 0.0f),
-				"Texture/alphablue.png"));		// �߾� �и���
+				glm::vec3(2.0f, 0.1f, 2.0f),
+				glm::vec3(0.0f), glm::vec3(-9.0f, 8.0f, 7.0f),
+				"Texture/alphablue.png"));
 		m_pGlasses.push_back(
-			new Plane("Objs/Cube.obj"
-				, glm::vec3(4.0f, 0.1f, 20.0f),
+			new Plane("Objs/Cube.obj",
+				glm::vec3(10.0f, 0.1f, 20.0f),
 				glm::vec3(0.0f, 0.0f, 90.0f),
-				glm::vec3(0.0f, 3.8f, 0.0f),
-				"Texture/alphablue.png"));		// �߾� �и���
+				glm::vec3(0.0f, 3.0f, 0.0f),
+				"Texture/alphablue.png"));
 
-		m_pPortal[0] = new Portal(1.0f, 2, glm::vec3(5.0f, 0.0f, 10.0f));
-		m_pPortal[1] = new Portal(1.0f, 1, glm::vec3(-10.0f, 0.0f, 1.0f));
+		//m_pPortal[0] = new Portal(1.0f, 2, glm::vec3(5.0f, 0.0f, 10.0f));
+		//m_pPortal[1] = new Portal(1.0f, 1, glm::vec3(-10.0f, 0.0f, 1.0f));
 		break;
 	case 1:
 		m_pPlayer->setTranslate(glm::vec3(-9.0f, 1.0f, -9.0f));
@@ -377,9 +490,9 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 		wall->draw(shaderNum, textureBind);
 	}
 
-	//for (auto portalwall : m_pPortalWalls) {
-	//	portalwall->draw(shaderNum, textureBind);
-	//}
+	for (auto portalwall : m_pPortalWalls) {
+		portalwall->draw(shaderNum, textureBind);
+	}
 	//m_pPortal[0]->draw(shaderNum, textureBind);
 	//m_pPortal[1]->draw(shaderNum, textureBind);
 	for (auto cube : m_pCubes) {
