@@ -16,34 +16,48 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 	m_pFloor = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.1f, 20.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
 	m_pPlayer = new Player(0.4f, glm::vec3(0.0f));
 
-	std::cout <<"벽 벡터 사이즈" << m_pWalls.size() << std::endl;
+	m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f, 5.0f, 0.0f), "Texture/wall.png"));		// right
+	m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(10.0f, 5.0f, 0.0f), "Texture/wall.png"));			// left
+	m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, -10.0f), "Texture/wall.png"));		// back
+	m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/wall.png"));			// front
 
 	//m_pPortal[0] = new Portal(1.0f, 1, glm::vec3(5.0f, 0.0f, 0.0f));
 	//m_pPortal[1] = new Portal(1.0f, 0, glm::vec3(0.0f, 0.0f, 5.0f));
 
 	switch (sceneNum) {
-	case 0:				// 튜토리얼
-		m_pPlayer->setTranslate(glm::vec3(9.0f, 0.0f, -9.0f));
-		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f, 5.0f, 0.0f), "Texture/wall.png"));		// right
-		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(10.0f, 5.0f, 0.0f), "Texture/wall.png"));			// left
-		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, -10.0f), "Texture/wall.png"));		// back
-		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/wall.png"));			// front
-		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f), glm::vec3(-9.0f, 4.999f, 7.0f), "Texture/realblack.png"));
+	case 0:
+		// 튜토리얼
+		m_pPlayer->setTranslate(glm::vec3(9.0f, 1.0f, -9.0f));
+		m_pCubes.push_back(new Cube("Objs/PortalCube.obj", glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f), glm::vec3(-9.0f, 5.0f, 7.0f), "Texture/PortalCube.jpg"));
+		m_pGlasses.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f), glm::vec3(-9.0f, 4.99f, 7.0f), "Texture/alphablue.png"));
 
-		m_pCube[0] = new Cube("Objs/PortalCube.obj", glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f), glm::vec3(-9.0f, 5.0f, 7.0f), "Texture/PortalCube.jpg");
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(5.0f, 1.0f, 9.99f), "Texture/realwhite.png"));
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-9.99f, 1.0f, 1.0f), "Texture/realwhite.png"));
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-9.99f, 6.0f, 7.0f), "Texture/realwhite.png"));
 
-		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(5.0f, 1.0f, 9.999f), "Texture/realwhite.png"));
-		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-9.999f, 1.0f, 1.0f), "Texture/realwhite.png"));
-		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-9.999f, 6.0f, 7.0f), "Texture/realwhite.png"));
+		m_pWalls.push_back(new Plane("Objs/roundPlane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f), glm::vec3(9.0f, 0.01f, -9.0f), "Texture/realred.png"));				// 발판
 
-		//m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(1.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.0f, 0.5f, 0.0f), "Texture/realblack.png"));
-		//m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(4.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.0f, 4.5f, 0.0f), "Texture/realblack.png"));
+		m_pGlasses.push_back(new Plane("Objs/Plane.obj", glm::vec3(1.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.0f, 0.5f, 0.0f), "Texture/alphablue.png"));		// 중앙 분리대
+		m_pGlasses.push_back(new Plane("Objs/Plane.obj", glm::vec3(4.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.0f, 3.8f, 0.0f), "Texture/alphablue.png"));		// 중앙 분리대
 		//m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f, 5.0f, 0.0f), "Texture/realwhite.png"));
 		//m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f, 5.0f, 0.0f), "Texture/realwhite.png"));
 		break;
 	case 1:
+		m_pPlayer->setTranslate(glm::vec3(-9.0f, 1.0f, -9.0f));
+		m_pCubes.push_back(new Cube("Objs/PortalCube.obj", glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f), glm::vec3(-9.0f, 8.0f, 7.0f), "Texture/PortalCube.jpg"));
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-9.99f, 1.0f, 1.0f), "Texture/realwhite.png"));
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-9.99f, 9.0f, 7.0f), "Texture/realwhite.png"));
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(9.99f, 9.0f, 7.0f), "Texture/realwhite.png"));
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(7.f, 1.0f, 9.99f), "Texture/realwhite.png"));
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(7.f, 7.0f, -9.99f), "Texture/realwhite.png"));
+
+		m_pWalls.push_back(new Plane("Objs/roundPlane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f), glm::vec3(7.0f, 6.0f, -9.0f), "Texture/realred.png"));				// 발판
+		m_pGlasses.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f), glm::vec3(7.0f, 5.99f, -9.0f), "Texture/alphablue.png"));			// 발판의 발판
+		m_pGlasses.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f), glm::vec3(-9.0f, 8.0f, 7.0f), "Texture/alphablue.png"));			// 큐브 밑
+		m_pGlasses.push_back(new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.0f, 3.0f, 0.0f), "Texture/alphablue.png"));			// 중앙분리대
 		break;
 	case 2:
+		
 		break;
 	}
 
@@ -72,6 +86,10 @@ Scene::~Scene()
 		delete wall;
 	}
 	m_pWalls.clear();
+	for (auto cube : m_pCubes) {
+		delete cube;
+	}
+	m_pCubes.clear();
 }
 
 void Scene::input()
@@ -268,11 +286,17 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 	}
 	//m_pPortal[0]->draw(shaderNum, textureBind);
 	//m_pPortal[1]->draw(shaderNum, textureBind);
-	m_pCube[0]->draw(shaderNum, textureBind);
-
+	for (auto cube : m_pCubes) {
+		cube->draw(shaderNum, textureBind);
+	}
 	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	for (auto glass : m_pGlasses) {
+		glass->draw(shaderNum, textureBind);
+	}
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH);
 	if(m_tCamera.fpsMode && !main) m_pPlayer->draw(shaderNum, textureBind);
 }
 
