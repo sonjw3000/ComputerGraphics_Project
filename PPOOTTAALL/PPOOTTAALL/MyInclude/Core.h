@@ -52,6 +52,10 @@ private:
 
 public:
 	void updateViewMat();
+	void updateProjMat();
+
+public:
+	glm::mat4 m_mProjMat;
 
 private:
 	Mesh* m_pCube;

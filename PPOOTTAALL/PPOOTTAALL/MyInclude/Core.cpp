@@ -110,9 +110,9 @@ void Single::initializeProgram()
 	m_pMainShader->use();
 
 	// proj mat
-	glm::mat4 projectionMat =
-		glm::perspective(glm::radians(45.0f), float(m_tWndSize.cx) / float(m_tWndSize.cy), 0.1f, 300.0f);
-	m_pMainShader->setMat4("projectionTransform", projectionMat);
+	m_mProjMat =
+		glm::perspective(glm::radians(45.0f), float(m_tWndSize.cx) / float(m_tWndSize.cy), 0.01f, 300.0f);
+	m_pMainShader->setMat4("projectionTransform", m_mProjMat);
 
 	// view mat
 	glm::mat4 viewTransform = m_pScene->m_tCamera.getViewMat();
@@ -132,7 +132,7 @@ void Single::initializeProgram()
 	m_pSkyCube = new CubeMap("Texture/cube/c");
 
 	m_pCubeShader->use();
-	m_pCubeShader->setMat4("projectionTransform", projectionMat);
+	m_pCubeShader->setMat4("projectionTransform", m_mProjMat);
 	m_pCubeShader->setMat4("viewTransform", glm::mat3(viewTransform));
 	//-------------------------------------------------------------------------------------
 	// shadow shader
@@ -163,6 +163,16 @@ void Single::updateViewMat()
 	// cube
 	m_pCubeShader->use();
 	m_pCubeShader->setMat4("viewTransform", glm::mat3(viewTransform));
+}
+
+void Single::updateProjMat()
+{
+	m_pMainShader->use();
+
+	// proj mat
+	//m_mProjMat =
+	//	glm::perspective(glm::radians(45.0f), float(m_tWndSize.cx) / float(m_tWndSize.cy), 0.1f, 300.0f);
+	m_pMainShader->setMat4("projectionTransform", m_mProjMat);
 }
 
 void Single::drawSkyCube()
@@ -225,10 +235,10 @@ void Single::reshape(int w, int h)
 	CORE->m_tWndSize = { w,h };
 
 	// update proj mat
-	glm::mat4 projectionMat =
-		glm::perspective(glm::radians(45.0f), float(w) / float(h), 0.1f, 300.0f);
-	CORE->m_pMainShader->setMat4("projectionTransform", projectionMat);
-	CORE->m_pCubeShader->setMat4("projectionTransform", projectionMat);
+	CORE->m_mProjMat =
+		glm::perspective(glm::radians(45.0f), float(w) / float(h), 0.01f, 300.0f);
+	CORE->m_pMainShader->setMat4("projectionTransform", CORE->m_mProjMat);
+	CORE->m_pCubeShader->setMat4("projectionTransform", CORE->m_mProjMat);
 
 	//-------------------------------------------------------------------------------------
 	//// shadow shader
