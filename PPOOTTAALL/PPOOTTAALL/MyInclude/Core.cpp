@@ -50,6 +50,7 @@ bool Single::init(int argc, char* argv[], int sizex, int sizey)
 	// Enable Depth Test
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_STENCIL_TEST);
+	glEnable(GL_CULL_FACE);
 
 	// Callback Functions
 	glutDisplayFunc(drawScene);
@@ -120,7 +121,7 @@ void Single::initializeProgram()
 
 	// light pos;
 	glm::vec3 viewPos = m_pScene->m_tCamera.getSight();
-	m_vLightPos = glm::vec3(25.0f);
+	m_vLightPos = glm::vec3(10.0f, 40.0f, 10.0f);
 	m_vLightColor = glm::vec3(1.0f);
 
 	m_pMainShader->setVec3("viewPos", viewPos);
@@ -178,12 +179,14 @@ void Single::updateProjMat()
 void Single::drawSkyCube()
 {
 	glDepthFunc(GL_LEQUAL);
+	glCullFace(GL_FRONT);
 	m_pCubeShader->use();
 
 	// bind tex
 	m_pSkyCube->bindTexture(0);
 	// draw cube
 	m_pCube->draw();
+	glCullFace(GL_BACK);
 	glDepthFunc(GL_LESS);
 }
 

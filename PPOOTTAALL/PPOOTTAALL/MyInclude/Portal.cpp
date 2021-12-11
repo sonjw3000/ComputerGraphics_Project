@@ -61,9 +61,7 @@ glm::vec3 Portal::getScaleVec()
 	glm::vec3 size = this->getRotateTransform() * glm::vec4(this->m_vScale, 0.0f);
 	size = glm::abs(size);
 
-
 	return size;
-
 }
 
 glm::mat4 Portal::clipProjMat(glm::mat4 const& viewMat, glm::mat4 const& projMat) const
