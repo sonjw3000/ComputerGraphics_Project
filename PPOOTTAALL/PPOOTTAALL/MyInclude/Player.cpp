@@ -61,7 +61,7 @@ void Player::update(float deltaTime)
 {
 	static float fMoveSpeed = 5.0f;
 	static float fGravity = 35.28f;			// 9.8m/s * 60 * 60 / 1000
-	static float fRotateSpeed = 72000.0f;
+	static float fRotateSpeed = 720.0f;
 	static bool bIncreaseFront = true;
 	static bool bIncreaseBack = false;
 
@@ -86,34 +86,34 @@ void Player::update(float deltaTime)
 	// if moved
 	float rotSpeed = fRotateSpeed * deltaTime;
 	if (m_vDir.x + m_vDir.z != 0) {
-		m_vRightRot.x += (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
-		m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
-		m_vBackRot.x += (1 - 2 * bIncreaseBack) * deltaTime * rotSpeed;
+		m_vRightRot.x += (1 - 2 * bIncreaseFront) * rotSpeed;
+		m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * rotSpeed;
+		m_vBackRot.x += (1 - 2 * bIncreaseBack) * rotSpeed;
 
 		if (abs(m_vLeftRot.x) >= 30.0f) {
 			bIncreaseFront = !bIncreaseFront;
-			m_vRightRot.x += (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
-			m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
+			m_vRightRot.x += (1 - 2 * bIncreaseFront) * rotSpeed;
+			m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * rotSpeed;
 		}
 
 		if (abs(m_vBackRot.x) >= 30.0f) {
 			bIncreaseBack = !bIncreaseBack;
-			m_vBackRot.x += (1 - 2 * bIncreaseBack) * deltaTime * rotSpeed;
+			m_vBackRot.x += (1 - 2 * bIncreaseBack) * rotSpeed;
 		}
 	}
 	// if not moved stop 
 	else {
 		if (m_vLeftRot.x > 0.1f) {
-			m_vLeftRot.x -= deltaTime * rotSpeed;
-			m_vRightRot.x += deltaTime * rotSpeed;
+			m_vLeftRot.x -= rotSpeed;
+			m_vRightRot.x += rotSpeed;
 			if (m_vLeftRot.x <= 0.1f) {
 				m_vLeftRot.x = 0;
 				m_vRightRot.x = 0;
 			}
 		}
 		else if (m_vLeftRot.x < -0.1f) {
-			m_vLeftRot.x += deltaTime * rotSpeed;
-			m_vRightRot.x -= deltaTime * rotSpeed;
+			m_vLeftRot.x += rotSpeed;
+			m_vRightRot.x -= rotSpeed;
 			if (m_vLeftRot.x >= -0.1f) {
 				m_vLeftRot.x = 0;
 				m_vRightRot.x = 0;
@@ -121,11 +121,11 @@ void Player::update(float deltaTime)
 		}
 
 		if (m_vBackRot.x > 0.1f) {
-			m_vBackRot.x -= deltaTime * rotSpeed;
+			m_vBackRot.x -= rotSpeed;
 			if (m_vBackRot.x <= 0.1f) m_vBackRot.x = 0;
 		}
 		else if (m_vBackRot.x < -0.1f) {
-			m_vBackRot.x += deltaTime * rotSpeed;
+			m_vBackRot.x += rotSpeed;
 			if (m_vBackRot.x >= 0.1f) m_vBackRot.x = 0;
 		}
 	}

@@ -56,7 +56,7 @@ public:
 private:
 	bool m_bJump = false;
 	bool m_bFalling = false;
-	float m_bFallingSpeed = 0.0f;
+	float m_fFallingSpeed = 0.0f;
 
 public:
 	void setJump();
