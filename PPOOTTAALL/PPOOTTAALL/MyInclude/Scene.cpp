@@ -75,6 +75,10 @@ void Scene::input()
 	if (GetAsyncKeyState('M') & 0x0001) {
 		glm::vec3 temp = m_pPlayer->getTranslateVec();
 		printf("%.2f %.2f %.2f\n", temp.x, temp.y, temp.z);
+		
+		glm::mat4 portalCam = getPortalView(m_pPortal[0], m_pPortal[1]);
+		glm::vec3 eye(portalCam[3][0], portalCam[3][1], portalCam[3][2]);
+		printf("%.2f, %.2f, %.2f\n", eye.x, eye.y, eye.z);
 	}
 	
 }
@@ -110,10 +114,10 @@ void Scene::update(float frameTime)
 	// player - floor
 	glm::vec3 playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
 	glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
-	glm::vec3 planeMin = m_pFloor->getTranslateVec() - m_pFloor->getScaleVec() / 2.0f;
-	glm::vec3 planeMax = m_pFloor->getTranslateVec() + m_pFloor->getScaleVec() / 2.0f;
-	if (aabbCollideCheck(playerMin, playerMax, planeMin, planeMax)) 
-		m_pPlayer->moveBack(glm::vec3(0.0f, playerMin.y - planeMax.y, 0.0f));
+	glm::vec3 floorMin = m_pFloor->getTranslateVec() - m_pFloor->getScaleVec() / 2.0f;
+	glm::vec3 floorMax = m_pFloor->getTranslateVec() + m_pFloor->getScaleVec() / 2.0f;
+	if (aabbCollideCheck(playerMin, playerMax, floorMin, floorMax)) 
+		m_pPlayer->moveBack(glm::vec3(0.0f, playerMin.y - floorMax.y, 0.0f));
 
 
 
@@ -143,7 +147,7 @@ void Scene::update(float frameTime)
 				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
 				// rotate player
-				//glm::vec3 newPos = 
+				//glm::vec3 newPos =
 				glm::vec3 newFow = glm::normalize(rotMat * glm::vec4(origin, 0.0f));
 				glm::vec3 newDir = glm::normalize(rotMat * glm::vec4(oridir, 0.0f));
 				m_pPlayer->setForward(newFow);
@@ -182,44 +186,43 @@ void Scene::update(float frameTime)
 			}*/
 
 			if (aabbCollideCheck((playerPivot - playerSize), (playerPivot + playerSize), (portalPivot - portalSize), (portalPivot + portalSize))) {
+				// set new Forward
+				glm::vec3 distRot = m_pPortal[!i]->getRotateVec();
+				glm::vec3 srcRot = m_pPortal[i]->getRotateVec();
 
-				glm::mat4 temp = m_tCamera.getViewMat() * m_pPortal[i]->getModelTransform();
-				glm::mat4 portalCam = getPortalView(m_pPortal[i], m_pPortal[!i]);
+				// rot offset
+				glm::vec3 rotOffset = distRot - srcRot;
 
-				glm::vec3 eye(portalCam[3][0], portalCam[3][1], portalCam[3][2]);
-				//eye /= portalCam[3][3];
+				glm::mat4 rotMat(1.0f);
+				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f));
+				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.y), glm::vec3(0.0f, 1.0f, 0.0f));
+				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
+				// rotate camera
+				if (m_tCamera.fpsMode) {
+					m_tCamera.pitch += rotOffset.z;
+					m_tCamera.yaw += rotOffset.y;
+					m_tCamera.vAT = rotMat * glm::vec4(m_tCamera.vAT, 0.0f);
+				}
+				else {
+					m_tCamera.pitch += rotOffset.z;
+					m_tCamera.yaw += rotOffset.y;
+					m_tCamera.vEYE = rotMat * glm::vec4(m_tCamera.vEYE, 0.0f);
+				}
+				m_tCamera.pitch = int(m_tCamera.pitch + 90.0f) % 360 - 90.0f;
+				if (m_tCamera.pitch > 89.0f) m_tCamera.pitch = 89.0f;
+				else if (m_tCamera.pitch < -89.0f) m_tCamera.pitch = -89.0f;
 
+				// translate player
+				glm::vec3 offset = m_pPortal[!i]->getTranslateVec() - m_pPortal[i]->getTranslateVec();
+				m_pPlayer->setTranslate(playerPivot + offset);
+				printf("%.2f %.2f %.2f\n", offset.x, offset.y, offset.z);
 
-				glm::vec3 newPos = -portalCam * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-				//float len = glm::length(newPos);
-				//newPos.y = 0;
-				//newPos = glm::normalize(newPos) * len;
-				printf("%.2f, %.2f, %.2f\n", eye.x, eye.y, eye.z);
-
-				//printf("newPos");
-
-
+				// move a little
+				m_pPlayer->moveLittle(frameTime);
+				break;
 			}
-
-			/*
-		glm::mat4 temp = m_tCamera.getViewMat() * from->getModelTransform();
-		glm::mat4 portalCam =
-			temp *
-			glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
-			glm::inverse(dist->getModelTransform());
-			*/
 		}
-
-		// hit twice
-		//if (bDoubleHit) {
-		//	m_pPlayer->setTranslate(playerPivot);
-
-		//	m_pPlayer->setForward(foward);
-		//	m_pPlayer->setDir(oridir);
-
-		//	//printf("back \t");
-		//}
 	}
 
 
@@ -284,9 +287,16 @@ void Scene::drawPortal(unsigned int shaderNum, int textureBind)
 
 		// move camera to back of the portal
 		glm::mat4 viewMat = getPortalView(m_pPortal[i], m_pPortal[!i]);
-		CORE->m_pCubeShader->setMat4("viewTransform", viewMat);
+		//glm::mat4 projMat = m_pPortal[i]->clipProjMat(viewMat, CORE->m_mProjMat);
+
 		CORE->m_pMainShader->setMat4("viewTransform", viewMat);
+
+		// cube map move
+		for (int i = 0; i < 4; ++i) viewMat[3][i] = 0.0f;
+
+		CORE->m_pCubeShader->setMat4("viewTransform", viewMat);
 		CORE->m_pMainShader->setVec3("viewPos", m_pPortal[i]->getTranslateVec());
+		//CORE->m_pMainShader->setMat4("projectionTransform", projMat);
 
 		// change stensil testing mode
 		// draw objs on restricted area
@@ -308,9 +318,13 @@ void Scene::drawPortal(unsigned int shaderNum, int textureBind)
 	glDepthMask(GL_TRUE);
 
 	CORE->updateViewMat();
-	for (int i = 0; i < 2; ++i)
-		m_pPortal[i]->draw(shaderNum, textureBind);
+	CORE->updateProjMat();
+	glDepthFunc(GL_ALWAYS);
 
+	for (int i = 0; i < 2; ++i) 
+		m_pPortal[i]->draw(shaderNum, textureBind);
+	
+	glDepthFunc(GL_LESS);
 	glColorMask(colorMasks[0], colorMasks[1], colorMasks[2], colorMasks[3]);
 	glDepthMask(depthMask);
 

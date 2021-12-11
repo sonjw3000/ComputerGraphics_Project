@@ -59,16 +59,13 @@ void Player::input(char key)
 
 void Player::update(float deltaTime)
 {
-	static float fMoveSpeed = 5.0f;
-	static float fGravity = 35.28f;			// 9.8m/s * 60 * 60 / 1000
+	static float fMoveSpeed = 5.0f;			// 5km/h
+	static float fGravity = 35.28f;			// 9.8m/s * 60 * 60 / 1000 == 35.28km/h
 	static float fRotateSpeed = 720.0f;
 	static bool bIncreaseFront = true;
 	static bool bIncreaseBack = false;
 
 	// gravity
-	//if (m_bJump || m_bFalling) {
-	//	printf("pos : %.2f\tspeed : %.2f\n", this->m_vPivot.y, m_fFallingSpeed);
-	//}
 	glm::vec3 offset = m_vDir;
 	offset.x *= fMoveSpeed * deltaTime;
 	offset.y += m_fFallingSpeed * deltaTime;

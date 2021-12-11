@@ -18,5 +18,7 @@ public:
 public:
 	void draw(unsigned int shaderNum, int bindTex);
 	glm::vec3 getScaleVec();
+
+	glm::mat4 clipProjMat(glm::mat4 const& viewMat, glm::mat4 const& projMat) const;
 };
 
