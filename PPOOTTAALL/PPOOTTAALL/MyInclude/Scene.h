@@ -17,7 +17,7 @@ public:
 	CameraVectors m_tCamera;
 
 private:
-	Plane* m_pPlane;
+	Plane* m_pFloor;
 	Plane* m_pWall[4];
 	Portal* m_pPortal[2];
 

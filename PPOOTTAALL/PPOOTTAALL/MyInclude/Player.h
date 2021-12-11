@@ -53,5 +53,13 @@ public:
 	void moveBack(glm::vec3 backHow);
 	void moveLittle(float deltaTime);
 
+private:
+	bool m_bJump = false;
+	bool m_bFalling = false;
+	float m_bFallingSpeed = 0.0f;
+
+public:
+	void setJump();
+
 };
 

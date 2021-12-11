@@ -60,18 +60,32 @@ void Player::input(char key)
 void Player::update(float deltaTime)
 {
 	static float fMoveSpeed = 5.0f;
+	static float fGravity = 35.28f;			// 9.8m/s * 60 * 60 / 1000
 	static float fRotateSpeed = 72000.0f;
 	static bool bIncreaseFront = true;
 	static bool bIncreaseBack = false;
 
-	glm::vec3 offset = m_vDir * fMoveSpeed * deltaTime;
+	// gravity
+	//if (m_bJump || m_bFalling) {
+	//	printf("pos : %.2f\tspeed : %.2f\n", this->m_vPivot.y, m_bFallingSpeed);
+	//}
+	glm::vec3 offset = m_vDir;
+	offset.x *= fMoveSpeed * deltaTime;
+	offset.y += m_bFallingSpeed * deltaTime;
+	offset.z *= fMoveSpeed * deltaTime;
+
+	m_bFallingSpeed -= fGravity * deltaTime;
+	if (m_bFallingSpeed <= -216.0f) m_bFallingSpeed = -216.0f;		// terminal falling speed
+	if (m_bJump && !m_bFalling && m_bFallingSpeed <= 0.0f) m_bFalling = true;
+
+	//glm::vec3 offset = m_vDir * fMoveSpeed * deltaTime;
 	this->setTranslate(m_vPivot + offset);
 
-	float rotSpeed = fRotateSpeed * deltaTime;
-	// if moved
-	if (m_vDir.x + m_vDir.z != 0) {
-		//printf("hello %f\n", rotSpeed);
 
+
+	// if moved
+	float rotSpeed = fRotateSpeed * deltaTime;
+	if (m_vDir.x + m_vDir.z != 0) {
 		m_vRightRot.x += (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
 		m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
 		m_vBackRot.x += (1 - 2 * bIncreaseBack) * deltaTime * rotSpeed;
@@ -194,6 +208,16 @@ glm::vec3 Player::getDir() const
 
 void Player::moveBack(glm::vec3 backHow)
 {
+	if (backHow.y != 0.0f) {
+		m_bJump = false;
+		m_bFalling = false;
+		m_bFallingSpeed = 0.0f;
+	}
+
+	glm::vec3 temp(m_vDir.x != 0, m_vDir.y != 0, m_vDir.z != 0);
+
+	backHow = backHow * temp;
+
 	this->setTranslate(m_vPivot - backHow);
 }
 
@@ -201,5 +225,13 @@ void Player::moveLittle(float deltaTime)
 {
 	//m_vPivot += m_vForward;
 	setTranslate(m_vPivot + m_vDir * deltaTime);
+}
+
+void Player::setJump()
+{
+	if (m_bJump) return;
+	m_bJump = true;
+	m_bFalling = false;
+	m_bFallingSpeed = 11.2f;
 }
 

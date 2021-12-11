@@ -9,10 +9,10 @@
 
 Scene::Scene(int sceneNum, CameraVectors& cam) :
 	m_pPortal{nullptr, nullptr},
-	m_pPlane(nullptr),
+	m_pFloor(nullptr),
 	m_iSceneNum(sceneNum)
 {
-	m_pPlane = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.1f, 20.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
+	m_pFloor = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.1f, 20.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
 	m_pPlayer = new Player(0.4f, glm::vec3(0.0f));
 
 	//m_pWall[0] = new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.1f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f,5.0f,0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 오른쪽 벽
@@ -53,7 +53,7 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 
 Scene::~Scene()
 {
-	delete m_pPlane;
+	delete m_pFloor;
 	delete m_pPlayer;
 
 	for(int i = 0; i < 2; ++i)
@@ -70,6 +70,15 @@ void Scene::input()
 	if (GetAsyncKeyState('S') & 0x8000) m_pPlayer->input('s');
 	if (GetAsyncKeyState('A') & 0x8000) m_pPlayer->input('a');
 	if (GetAsyncKeyState('D') & 0x8000) m_pPlayer->input('d');
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000) m_pPlayer->setJump();
+
+	if (GetAsyncKeyState('M') & 0x0001) {
+		glm::vec3 temp = m_pPlayer->getTranslateVec();
+		printf("%.2f %.2f %.2f\n", temp.x, temp.y, temp.z);
+	}
+		
+
+	
 }
 
 void Scene::update(float frameTime)
@@ -101,6 +110,14 @@ void Scene::update(float frameTime)
 	//----------------------------------------------
 	// collide check
 	// player - floor
+	glm::vec3 playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
+	glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
+	glm::vec3 planeMin = m_pFloor->getTranslateVec() - m_pFloor->getScaleVec() / 2.0f;
+	glm::vec3 planeMax = m_pFloor->getTranslateVec() + m_pFloor->getScaleVec() / 2.0f;
+	if (aabbCollideCheck(playerMin, playerMax, planeMin, planeMax)) {
+		m_pPlayer->moveBack(glm::vec3(0.0f, playerMin.y - planeMax.y, 0.0f));
+		//printf("hold ");
+	}
 
 
 	// player - portal
@@ -223,7 +240,7 @@ void Scene::update(float frameTime)
 void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 {
 	// draw all
-	m_pPlane->draw(shaderNum, textureBind);
+	m_pFloor->draw(shaderNum, textureBind);
 
 	//m_pWall[0]->draw(shaderNum, textureBind);
 	//m_pWall[1]->draw(shaderNum, textureBind);
