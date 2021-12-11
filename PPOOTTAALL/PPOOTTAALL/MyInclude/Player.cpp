@@ -38,6 +38,14 @@ Player::~Player()
 
 void Player::input(char key)
 {
+	static char befKey;
+
+	if (befKey + key == 'w' + 's') {
+		befKey = key;
+		return;
+	}
+	befKey = key;
+
 	glm::vec3 dir(0.0f);
 	switch (key) {
 	case 'w':	dir = m_vForward;	break;
@@ -165,6 +173,6 @@ void Player::moveBack(glm::vec3 backHow)
 void Player::moveLittle(float deltaTime)
 {
 	//m_vPivot += m_vForward;
-	setTranslate(m_vPivot + m_vDir * deltaTime * 15.0f);
+	setTranslate(m_vPivot + m_vDir * deltaTime);
 }
 

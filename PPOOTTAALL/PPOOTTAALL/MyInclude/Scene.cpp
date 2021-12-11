@@ -96,8 +96,13 @@ void Scene::update(float frameTime)
 
 	// player - portal
 	if (m_pPortal[0] && m_pPortal[1]) {
+		bool bDoubleHit = false;
+
+		glm::vec3 origin = m_pPlayer->getFoward();
+		glm::vec3 oridir = m_pPlayer->getDir();
+
 		glm::vec3 playerPivot = m_pPlayer->getTranslateVec();
-		glm::vec3 playerSize = m_pPlayer->getScaleVec() / 10.0f;
+		glm::vec3 playerSize = m_pPlayer->getScaleVec() / 5.0f;
 		for (int i = 0; i < 2; ++i) {
 			glm::vec3 portalPivot = m_pPortal[i]->getTranslateVec();
 			glm::vec3 portalSize = m_pPortal[i]->getScaleVec();
@@ -106,18 +111,16 @@ void Scene::update(float frameTime)
 				glm::vec3 distRot = m_pPortal[!i]->getRotateVec();
 				glm::vec3 srcRot = m_pPortal[i]->getRotateVec();
 
-				glm::vec3 rot = distRot - srcRot;
-				printf("%.2f %.2f %.2f\n", rot.x, rot.y, rot.z);
+				// rot offset
+				glm::vec3 rotOffset = distRot - srcRot;
 
 				glm::mat4 rotMat(1.0f);
-				rotMat = glm::rotate(rotMat, glm::radians(-rot.x), glm::vec3(1.0f, 0.0f, 0.0f));
-				rotMat = glm::rotate(rotMat, glm::radians(-rot.y), glm::vec3(0.0f, 1.0f, 0.0f));
-				rotMat = glm::rotate(rotMat, glm::radians(-rot.z), glm::vec3(0.0f, 0.0f, 1.0f));
+				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f));
+				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.y), glm::vec3(0.0f, 1.0f, 0.0f));
+				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
 				// rotate player
-				//printf("%.2f %.2f %.2f\t %.2f %.2f %.2f\n", origin.x, origin.y, origin.z, newFow.x, newFow.y, newFow.z);
-				glm::vec3 origin = m_pPlayer->getFoward();
-				glm::vec3 oridir = m_pPlayer->getDir();
+				//glm::vec3 newPos = 
 				glm::vec3 newFow = glm::normalize(rotMat * glm::vec4(origin, 0.0f));
 				glm::vec3 newDir = glm::normalize(rotMat * glm::vec4(oridir, 0.0f));
 				m_pPlayer->setForward(newFow);
@@ -125,29 +128,45 @@ void Scene::update(float frameTime)
 
 				// rotate camera
 				if (m_tCamera.fpsMode) {
-					m_tCamera.pitch += rot.z;
-					m_tCamera.yaw += rot.y;
+					m_tCamera.pitch += rotOffset.z;
+					m_tCamera.yaw += rotOffset.y;
 					m_tCamera.vAT = rotMat * glm::vec4(m_tCamera.vAT, 0.0f);
 				}
 				else {
-					m_tCamera.pitch += rot.z;
-					m_tCamera.yaw += rot.y;
+					m_tCamera.pitch += rotOffset.z;
+					m_tCamera.yaw += rotOffset.y;
 					m_tCamera.vEYE = rotMat * glm::vec4(m_tCamera.vEYE, 0.0f);
 				}
-
 				m_tCamera.pitch = int(m_tCamera.pitch + 90.0f) % 360 - 90.0f;
 				if (m_tCamera.pitch > 89.0f) m_tCamera.pitch = 89.0f;
 				else if (m_tCamera.pitch < -89.0f) m_tCamera.pitch = -89.0f;
 
-
 				// translate player
-				glm::vec3 newPivot = m_pPlayer->getTranslateVec();
-				m_pPlayer->setTranslate(m_pPortal[!i]->getTranslateVec());
-				
+				glm::vec3 offset = m_pPortal[!i]->getTranslateVec() - m_pPortal[i]->getTranslateVec();
+				m_pPlayer->setTranslate(playerPivot + offset);
+				printf("%.2f %.2f %.2f\n", offset.x, offset.y, offset.z);
+
+
 				// move a little
 				m_pPlayer->moveLittle(frameTime);
+
+				// check double hit`
+				glm::vec3 newPivot = m_pPlayer->getTranslateVec();
+				portalPivot = m_pPortal[!i]->getTranslateVec();
+				portalSize = m_pPortal[!i]->getScaleVec();
+				bDoubleHit = aabbCollideCheck(newPivot - playerSize, newPivot + playerSize, portalPivot - portalSize, portalPivot + portalSize);
 				break;
 			}
+		}
+
+		// hit twice
+		if (bDoubleHit) {
+			m_pPlayer->setTranslate(playerPivot);
+
+			m_pPlayer->setForward(foward);
+			m_pPlayer->setDir(oridir);
+
+			//printf("back \t");
 		}
 	}
 
