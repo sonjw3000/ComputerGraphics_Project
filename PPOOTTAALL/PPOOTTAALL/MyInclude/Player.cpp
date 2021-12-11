@@ -60,38 +60,65 @@ void Player::input(char key)
 void Player::update(float deltaTime)
 {
 	static float fMoveSpeed = 5.0f;
-	static float fRotateSpeed = 360.0f;
+	static float fRotateSpeed = 72000.0f;
 	static bool bIncreaseFront = true;
 	static bool bIncreaseBack = false;
 
 	glm::vec3 offset = m_vDir * fMoveSpeed * deltaTime;
 	this->setTranslate(m_vPivot + offset);
 
+	float rotSpeed = fRotateSpeed * deltaTime;
 	// if moved
-	if (glm::length(m_vDir)) {
-		float rotSpeed = fRotateSpeed * deltaTime;
-
+	if (m_vDir.x + m_vDir.z != 0) {
 		//printf("hello %f\n", rotSpeed);
 
-		m_vRightRot.x += (1 - 2 * bIncreaseFront) * rotSpeed;
-		m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * rotSpeed;
-		m_vBackRot.x += (1 - 2 * bIncreaseBack) * rotSpeed;
+		m_vRightRot.x += (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
+		m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
+		m_vBackRot.x += (1 - 2 * bIncreaseBack) * deltaTime * rotSpeed;
 
 		if (abs(m_vLeftRot.x) >= 30.0f) {
 			bIncreaseFront = !bIncreaseFront;
-			m_vRightRot.x += (1 - 2 * bIncreaseFront) * rotSpeed;
-			m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * rotSpeed;
+			m_vRightRot.x += (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
+			m_vLeftRot.x -= (1 - 2 * bIncreaseFront) * deltaTime * rotSpeed;
 		}
 
 		if (abs(m_vBackRot.x) >= 30.0f) {
 			bIncreaseBack = !bIncreaseBack;
-			m_vBackRot.x += (1 - 2 * bIncreaseBack) * rotSpeed;
+			m_vBackRot.x += (1 - 2 * bIncreaseBack) * deltaTime * rotSpeed;
+		}
+	}
+	// if not moved stop 
+	else {
+		if (m_vLeftRot.x > 0.1f) {
+			m_vLeftRot.x -= deltaTime * rotSpeed;
+			m_vRightRot.x += deltaTime * rotSpeed;
+			if (m_vLeftRot.x <= 0.1f) {
+				m_vLeftRot.x = 0;
+				m_vRightRot.x = 0;
+			}
+		}
+		else if (m_vLeftRot.x < -0.1f) {
+			m_vLeftRot.x += deltaTime * rotSpeed;
+			m_vRightRot.x -= deltaTime * rotSpeed;
+			if (m_vLeftRot.x >= -0.1f) {
+				m_vLeftRot.x = 0;
+				m_vRightRot.x = 0;
+			}
 		}
 
-		m_pLeftLeg->setRotate(m_vLeftRot);
-		m_pRightLeg->setRotate(m_vRightRot);
-		m_pBackLeg->setRotate(m_vBackRot);
+		if (m_vBackRot.x > 0.1f) {
+			m_vBackRot.x -= deltaTime * rotSpeed;
+			if (m_vBackRot.x <= 0.1f) m_vBackRot.x = 0;
+		}
+		else if (m_vBackRot.x < -0.1f) {
+			m_vBackRot.x += deltaTime * rotSpeed;
+			if (m_vBackRot.x >= 0.1f) m_vBackRot.x = 0;
+		}
 	}
+
+	m_pLeftLeg->setRotate(m_vLeftRot);
+	m_pRightLeg->setRotate(m_vRightRot);
+	m_pBackLeg->setRotate(m_vBackRot);
 }
 
 void Player::draw(unsigned int shaderNum, int textureBind)

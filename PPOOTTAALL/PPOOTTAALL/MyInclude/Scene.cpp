@@ -77,7 +77,10 @@ void Scene::update(float frameTime)
 	glm::vec3 foward;
 	// update here
 	if (m_tCamera.fpsMode) {
-		m_tCamera.vEYE = m_pPlayer->getTranslateVec();
+		glm::vec3 yPlus = m_pPlayer->getScaleVec() / 2.0f;
+		yPlus.x = 0;
+		yPlus.z = 0;
+		m_tCamera.vEYE = m_pPlayer->getTranslateVec() + yPlus;
 		foward = m_tCamera.vAT;
 		foward.y = 0;
 		foward = glm::normalize(foward);
@@ -167,9 +170,12 @@ void Scene::update(float frameTime)
 			if (aabbCollideCheck((playerPivot - playerSize), (playerPivot + playerSize), (portalPivot - portalSize), (portalPivot + portalSize))) {
 
 				glm::mat4 temp = m_tCamera.getViewMat() * m_pPortal[i]->getModelTransform();
-				glm::mat4 portalCam = getPortalView(m_pPortal[i], m_pPortal[!i]);
+				glm::mat4 portalCam = getPortalView(m_pPortal[!i], m_pPortal[i]);
 
-				glm::vec3 newPos = portalCam * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+				glm::vec3 newPos = -portalCam * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+				//float len = glm::length(newPos);
+				//newPos.y = 0;
+				//newPos = glm::normalize(newPos) * len;
 				printf("%.2f, %.2f, %.2f\n", newPos.x, newPos.y, newPos.z);
 
 				//printf("newPos");
@@ -187,14 +193,14 @@ void Scene::update(float frameTime)
 		}
 
 		// hit twice
-		if (bDoubleHit) {
-			m_pPlayer->setTranslate(playerPivot);
+		//if (bDoubleHit) {
+		//	m_pPlayer->setTranslate(playerPivot);
 
-			m_pPlayer->setForward(foward);
-			m_pPlayer->setDir(oridir);
+		//	m_pPlayer->setForward(foward);
+		//	m_pPlayer->setDir(oridir);
 
-			//printf("back \t");
-		}
+		//	//printf("back \t");
+		//}
 	}
 
 
