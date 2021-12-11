@@ -6,6 +6,7 @@ class Player;
 class Mesh;
 class Plane;
 class Portal;
+class Cube;
 
 class Scene {
 private:
@@ -18,12 +19,13 @@ public:
 
 private:
 	Plane* m_pFloor;
-	Plane* m_pWall[4];
+	std::vector<Plane*> m_pWalls;
 	Portal* m_pPortal[2];
+	std::vector<Plane*> m_pPortalWalls;
 
 	Player* m_pPlayer;
 
-	Plane* m_pCube[2];
+	Cube* m_pCube[2];
 
 public:
 	Scene() = delete;
