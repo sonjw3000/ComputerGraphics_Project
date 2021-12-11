@@ -61,6 +61,9 @@
     <Filter Include="소스 파일\Mesh\Portal">
       <UniqueIdentifier>{fad9bc02-33e3-4f63-b056-e0b85df22c91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Mesh\Cube">
+      <UniqueIdentifier>{b9c8a4dc-163d-45af-b678-c2dca23bfc2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -98,6 +101,9 @@
     </ClCompile>
     <ClCompile Include="MyInclude\Portal.cpp">
       <Filter>소스 파일\Mesh\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="MyInclude\Cube.cpp">
+      <Filter>소스 파일\Mesh\Cube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="MyInclude\CollisionCheck.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MyInclude\Cube.h">
+      <Filter>소스 파일\Mesh\Cube</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

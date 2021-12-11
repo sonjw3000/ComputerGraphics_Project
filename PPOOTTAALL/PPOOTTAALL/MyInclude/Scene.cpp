@@ -2,6 +2,7 @@
 #include "ShaderProgram.h"
 #include "Scene.h"
 #include "Plane.h"
+#include "Cube.h"
 #include "Player.h"
 #include "Portal.h"
 #include "CollisionCheck.h"
@@ -15,22 +16,30 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 	m_pFloor = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.1f, 20.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
 	m_pPlayer = new Player(0.4f, glm::vec3(0.0f));
 
-	//m_pWall[0] = new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.1f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f,5.0f,0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 오른쪽 벽
-	//m_pWall[1] = new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.1f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(10.0f,5.0f,0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 왼쪽 벽
-	//m_pWall[2] = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.1f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f,5.0f, -10.0f), "Texture/bg.png");	// 
-	//m_pWall[3] = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.1f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/bg.png");
+	std::cout <<"벽 벡터 사이즈" << m_pWalls.size() << std::endl;
 
-	m_pPortal[0] = new Portal(1.0f, 1, glm::vec3(5.0f, 0.0f, 0.0f));
-	m_pPortal[1] = new Portal(1.0f, 0, glm::vec3(0.0f, 0.0f, 5.0f));
-	//m_pCube[0] = new Plane("Objs/PortalCube.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/PortalCube.jpg");
+	//m_pPortal[0] = new Portal(1.0f, 1, glm::vec3(5.0f, 0.0f, 0.0f));
+	//m_pPortal[1] = new Portal(1.0f, 0, glm::vec3(0.0f, 0.0f, 5.0f));
+
 	switch (sceneNum) {
 	case 0:				// 튜토리얼
-		m_pWall[0] = new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f, 5.0f, 0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 오른쪽 벽
-		m_pWall[1] = new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(10.0f, 5.0f, 0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 왼쪽 벽
-		m_pWall[2] = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, -10.0f), "Texture/bg.png");	// 
-		m_pWall[3] = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/bg.png");
+		m_pPlayer->setTranslate(glm::vec3(9.0f, 0.0f, -9.0f));
+		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f, 5.0f, 0.0f), "Texture/wall.png"));		// right
+		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(10.0f, 5.0f, 0.0f), "Texture/wall.png"));			// left
+		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, -10.0f), "Texture/wall.png"));		// back
+		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/wall.png"));			// front
+		m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f), glm::vec3(-9.0f, 4.999f, 7.0f), "Texture/realblack.png"));
 
+		m_pCube[0] = new Cube("Objs/PortalCube.obj", glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f), glm::vec3(-9.0f, 5.0f, 7.0f), "Texture/PortalCube.jpg");
 
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(5.0f, 1.0f, 9.999f), "Texture/realwhite.png"));
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-9.999f, 1.0f, 1.0f), "Texture/realwhite.png"));
+		m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(2.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-9.999f, 6.0f, 7.0f), "Texture/realwhite.png"));
+
+		//m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(1.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.0f, 0.5f, 0.0f), "Texture/realblack.png"));
+		//m_pWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(4.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.0f, 4.5f, 0.0f), "Texture/realblack.png"));
+		//m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f, 5.0f, 0.0f), "Texture/realwhite.png"));
+		//m_pPortalWalls.push_back(new Plane("Objs/Plane.obj", glm::vec3(3.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f, 5.0f, 0.0f), "Texture/realwhite.png"));
 		break;
 	case 1:
 		break;
@@ -59,8 +68,10 @@ Scene::~Scene()
 	for(int i = 0; i < 2; ++i)
 		if (m_pPortal[i]) delete m_pPortal[i];
 
-	for (int i = 0; i < 4; ++i)
-		if (m_pWall[i]) delete m_pWall[i];
+	for (auto wall : m_pWalls) {
+		delete wall;
+	}
+	m_pWalls.clear();
 }
 
 void Scene::input()
@@ -70,7 +81,7 @@ void Scene::input()
 	if (GetAsyncKeyState('S') & 0x8000) m_pPlayer->input('s');
 	if (GetAsyncKeyState('A') & 0x8000) m_pPlayer->input('a');
 	if (GetAsyncKeyState('D') & 0x8000) m_pPlayer->input('d');
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000) m_pPlayer->setJump();
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)m_pPlayer->setJump();
 
 	if (GetAsyncKeyState('M') & 0x0001) {
 		glm::vec3 temp = m_pPlayer->getTranslateVec();
@@ -244,14 +255,19 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 	// draw all
 	m_pFloor->draw(shaderNum, textureBind);
 
-	//m_pWall[0]->draw(shaderNum, textureBind);
-	//m_pWall[1]->draw(shaderNum, textureBind);
-	//m_pWall[2]->draw(shaderNum, textureBind);
-	//m_pWall[3]->draw(shaderNum, textureBind);
+	for (auto wall : m_pWalls) {
+		wall->draw(shaderNum, textureBind);
+	}
 
+	for (auto portalwall : m_pPortalWalls) {
+		portalwall->draw(shaderNum, textureBind);
+	}
 	//m_pPortal[0]->draw(shaderNum, textureBind);
 	//m_pPortal[1]->draw(shaderNum, textureBind);
-	//m_pCube[0]->draw(shaderNum, textureBind);
+	m_pCube[0]->draw(shaderNum, textureBind);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	if(m_tCamera.fpsMode && !main) m_pPlayer->draw(shaderNum, textureBind);
 }
