@@ -86,7 +86,9 @@ void Scene::input()
 void Scene::update(float frameTime)
 {
 	glm::vec3 foward;
+	//----------------------------------------------
 	// update here
+	//----------------------------------------------
 	if (m_tCamera.fpsMode) {
 		glm::vec3 yPlus = m_pPlayer->getScaleVec() / 2.0f;
 		yPlus.x = 0;
@@ -105,12 +107,12 @@ void Scene::update(float frameTime)
 
 	//----------------------------------------------
 	// player move
+	//----------------------------------------------
 	m_pPlayer->update(frameTime);
 
 	//----------------------------------------------
-
-	//----------------------------------------------
 	// collide check
+	//----------------------------------------------
 	// player - floor
 	glm::vec3 playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
 	glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
@@ -121,6 +123,7 @@ void Scene::update(float frameTime)
 
 
 
+	//----------------------------------------------
 	// player - portal
 	if (m_pPortal[0] && m_pPortal[1]) {
 		bool bDoubleHit = false;
@@ -226,19 +229,17 @@ void Scene::update(float frameTime)
 	}
 
 
+	//----------------------------------------------
 	// player button?
 
+	//----------------------------------------------
 	// camera update by player
+	//----------------------------------------------
 	if (m_tCamera.fpsMode) m_tCamera.vEYE = m_pPlayer->getTranslateVec();
 	else m_tCamera.vAT = m_pPlayer->getTranslateVec();
 	
+	//----------------------------------------------
 	CORE->updateViewMat();
-
-	//printf("EYE : %.2f %.2f %.2f \AT : %.2f %.2f %.2f\n", 
-	//	m_tCamera.vEYE.x + m_tCamera.vAT.x, m_tCamera.vEYE.y + m_tCamera.vAT.y, m_tCamera.vEYE.z + m_tCamera.vAT.z,
-	//	m_tCamera.vAT.x, m_tCamera.vAT.y, m_tCamera.vAT.z);
-
-	// set Player Dir to zero
 	m_pPlayer->setDirZero();
 }
 
