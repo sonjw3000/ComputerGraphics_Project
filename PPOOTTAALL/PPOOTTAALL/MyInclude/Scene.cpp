@@ -12,19 +12,25 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 	m_pPlane(nullptr),
 	m_iSceneNum(sceneNum)
 {
-	m_pPlane = new Plane("Objs/Cube.obj", glm::vec3(20.0f, 0.1f, 20.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
+	m_pPlane = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.1f, 20.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
 	m_pPlayer = new Player(0.4f, glm::vec3(0.0f));
 
-	//m_pWall[0] = new Plane("Objs/Cube.obj", glm::vec3(10.0f, 0.1f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f,5.0f,0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 오른쪽 벽
-	//m_pWall[1] = new Plane("Objs/Cube.obj", glm::vec3(10.0f, 0.1f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(10.0f,5.0f,0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 왼쪽 벽
-	//m_pWall[2] = new Plane("Objs/Cube.obj", glm::vec3(20.0f, 0.1f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f,5.0f, -10.0f), "Texture/bg.png");	// 
-	//m_pWall[3] = new Plane("Objs/Cube.obj", glm::vec3(20.0f, 0.1f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/bg.png");
+	//m_pWall[0] = new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.1f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f,5.0f,0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 오른쪽 벽
+	//m_pWall[1] = new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.1f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(10.0f,5.0f,0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 왼쪽 벽
+	//m_pWall[2] = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.1f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f,5.0f, -10.0f), "Texture/bg.png");	// 
+	//m_pWall[3] = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.1f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/bg.png");
 
-	m_pPortal[0] = new Portal(0.4f, 1, glm::vec3(5.0f, 0.0f, 0.0f));
-	m_pPortal[1] = new Portal(0.4f, 0, glm::vec3(0.0f, 0.0f, 5.0f));
-
+	m_pPortal[0] = new Portal(1.0f, 1, glm::vec3(5.0f, 0.0f, 0.0f));
+	m_pPortal[1] = new Portal(1.0f, 0, glm::vec3(0.0f, 0.0f, 5.0f));
+	//m_pCube[0] = new Plane("Objs/PortalCube.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/PortalCube.jpg");
 	switch (sceneNum) {
-	case 0:
+	case 0:				// 튜토리얼
+		m_pWall[0] = new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(-10.0f, 5.0f, 0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 오른쪽 벽
+		m_pWall[1] = new Plane("Objs/Plane.obj", glm::vec3(10.0f, 0.0f, 20.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(10.0f, 5.0f, 0.0f), "Texture/bg.png");	// 로봇이 바라보는 방향 기준 왼쪽 벽
+		m_pWall[2] = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, -10.0f), "Texture/bg.png");	// 
+		m_pWall[3] = new Plane("Objs/Plane.obj", glm::vec3(20.0f, 0.0f, 10.0f), glm::vec3(90.0f, 0.0f, 0.0f), glm::vec3(0.0f, 5.0f, 10.0f), "Texture/bg.png");
+
+
 		break;
 	case 1:
 		break;
@@ -180,6 +186,7 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 
 	//m_pPortal[0]->draw(shaderNum, textureBind);
 	//m_pPortal[1]->draw(shaderNum, textureBind);
+	//m_pCube[0]->draw(shaderNum, textureBind);
 
 	if(m_tCamera.fpsMode && !main) m_pPlayer->draw(shaderNum, textureBind);
 }

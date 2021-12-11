@@ -23,6 +23,8 @@ private:
 
 	Player* m_pPlayer;
 
+	Plane* m_pCube[2];
+
 public:
 	Scene() = delete;
 	Scene(int sceneNum, CameraVectors& cam);
