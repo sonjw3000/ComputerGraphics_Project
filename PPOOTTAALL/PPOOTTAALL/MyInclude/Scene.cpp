@@ -108,11 +108,11 @@ void Scene::update(float frameTime)
 		glm::vec3 oridir = m_pPlayer->getDir();
 
 		glm::vec3 playerPivot = m_pPlayer->getTranslateVec();
-		glm::vec3 playerSize = m_pPlayer->getScaleVec() / 5.0f;
+		glm::vec3 playerSize = m_pPlayer->getScaleVec() / 2.0f;
 		for (int i = 0; i < 2; ++i) {
 			glm::vec3 portalPivot = m_pPortal[i]->getTranslateVec();
-			glm::vec3 portalSize = m_pPortal[i]->getScaleVec();
-			if (aabbCollideCheck(playerPivot - playerSize, playerPivot + playerSize, portalPivot - portalSize, portalPivot + portalSize)) {
+			glm::vec3 portalSize = m_pPortal[i]->getScaleVec() / 2.0f;
+			/*if (aabbCollideCheck(playerPivot - playerSize, playerPivot + playerSize, portalPivot - portalSize, portalPivot + portalSize)) {
 				// set new Forward
 				glm::vec3 distRot = m_pPortal[!i]->getRotateVec();
 				glm::vec3 srcRot = m_pPortal[i]->getRotateVec();
@@ -162,7 +162,28 @@ void Scene::update(float frameTime)
 				portalSize = m_pPortal[!i]->getScaleVec();
 				bDoubleHit = aabbCollideCheck(newPivot - playerSize, newPivot + playerSize, portalPivot - portalSize, portalPivot + portalSize);
 				break;
+			}*/
+
+			if (aabbCollideCheck((playerPivot - playerSize), (playerPivot + playerSize), (portalPivot - portalSize), (portalPivot + portalSize))) {
+
+				glm::mat4 temp = m_tCamera.getViewMat() * m_pPortal[i]->getModelTransform();
+				glm::mat4 portalCam = getPortalView(m_pPortal[i], m_pPortal[!i]);
+
+				glm::vec3 newPos = portalCam * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+				printf("%.2f, %.2f, %.2f\n", newPos.x, newPos.y, newPos.z);
+
+				//printf("newPos");
+
+
 			}
+
+			/*
+		glm::mat4 temp = m_tCamera.getViewMat() * from->getModelTransform();
+		glm::mat4 portalCam =
+			temp *
+			glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
+			glm::inverse(dist->getModelTransform());
+			*/
 		}
 
 		// hit twice
@@ -252,7 +273,6 @@ void Scene::drawPortal(unsigned int shaderNum, int textureBind)
 
 	}
 	glDisable(GL_STENCIL_TEST);
-	
 
 	// cant overrite
 	GLboolean colorMasks[4];

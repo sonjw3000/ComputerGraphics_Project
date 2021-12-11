@@ -8,6 +8,7 @@ class Portal :
     public Mesh
 {
 	TextureClass* m_pTexture;
+	int m_iFaceNum;
 
 public:
 	Portal() = delete;
@@ -16,6 +17,6 @@ public:
 
 public:
 	void draw(unsigned int shaderNum, int bindTex);
-
+	glm::vec3 getScaleVec();
 };
 

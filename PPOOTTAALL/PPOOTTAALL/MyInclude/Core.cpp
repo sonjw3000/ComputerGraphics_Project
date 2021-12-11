@@ -211,6 +211,7 @@ void Single::drawScene()
 	CORE->m_pMainShader->use();
 	CORE->m_pDepthMap->bindTexture(0);
 	CORE->m_pScene->draw(CORE->m_pMainShader->getProgram(), 1, true);
+
 	//--------------------------------------------------------------
 	CORE->drawSkyCube();
 
