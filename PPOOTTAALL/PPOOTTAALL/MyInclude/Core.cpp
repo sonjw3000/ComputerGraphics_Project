@@ -121,7 +121,7 @@ void Single::initializeProgram()
 
 	// light pos;
 	glm::vec3 viewPos = m_pScene->m_tCamera.getSight();
-	m_vLightPos = glm::vec3(0.f, 25.0f, 0.f);
+	m_vLightPos = glm::vec3(4.f, 25.0f, 4.f);
 	m_vLightColor = glm::vec3(1.0f);
 
 	m_pMainShader->setVec3("viewPos", viewPos);

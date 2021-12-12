@@ -36,9 +36,29 @@ Player::~Player()
 	delete m_pGun;
 }
 
+bool Player::bIsHit() const
+{
+	return m_bHitPortal;
+}
+
+void Player::hit()
+{
+	m_bHitPortal = true;
+}
+
+bool Player::isHoldOn() const
+{
+	return m_bHoldOn;
+}
+
+void Player::offHold()
+{
+	m_bHoldOn = false;
+}
+
 void Player::input(char key)
 {
-	static char befKey;
+	static char befKey = 0;
 
 	if (befKey + key == 'w' + 's') {
 		befKey = key;
@@ -52,8 +72,10 @@ void Player::input(char key)
 	case 's':	dir = -m_vForward;	break;
 	case 'a':	dir = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(m_vForward, 0.0f);		break;
 	case 'd':	dir = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(m_vForward, 0.0f);	break;
+	case 'e':	m_bHoldOn = true;	break;
 	}
 
+	if (key != 'e')
 	m_vDir = glm::normalize(m_vDir + dir);
 }
 
@@ -132,6 +154,8 @@ void Player::update(float deltaTime)
 	m_pLeftLeg->setRotate(m_vLeftRot);
 	m_pRightLeg->setRotate(m_vRightRot);
 	m_pBackLeg->setRotate(m_vBackRot);
+
+	m_bHitPortal = false;
 }
 
 void Player::draw(unsigned int shaderNum, int textureBind)

@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Portal.h"
 #include "CollisionCheck.h"
+#include "Button.h"
 #include <gl/glm/gtx/intersect.hpp>
 
 inline void printVector(glm::vec3 vec)
@@ -70,7 +71,12 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				glm::vec3(0.5f, 0.5f, 0.5f),
 				glm::vec3(0.0f), glm::vec3(-9.0f, 5.0f, 7.0f),
 				"Texture/PortalCube.jpg"));
-
+		m_pCubes.push_back(
+			new Cube("Objs/PortalCube.obj",
+				glm::vec3(0.5f),
+				glm::vec3(0.0f),
+				glm::vec3(5.0f, 8.0f, 5.0f),
+				"Texture/PortalCube.jpg"));
 		// portal walls
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
@@ -110,12 +116,9 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				"Texture/realwhite.png"));
 
 		// wall
-		m_pWalls.push_back(
-			new Plane("Objs/roundPlane.obj",
-				glm::vec3(2.0f, 0.0f, 2.0f),
-				glm::vec3(0.0f)
-				, glm::vec3(9.0f, 0.01f, -9.0f),
-				"Texture/realred.png"));
+		m_pButtons.push_back(
+			new Button(2.0f, 
+				glm::vec3(9.0f, 0.01f, -9.0f)));
 
 		// transparent wall
 		m_pFloor.push_back(
@@ -234,12 +237,8 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				glm::vec3(6.5f, 6.0f, 1.0f),
 				"Texture/realwhite.png"));
 
-		// button
-		m_pWalls.push_back(
-			new Plane("Objs/roundPlane.obj",
-				glm::vec3(2.0f, 0.0f, 2.0f),
-				glm::vec3(0.0f), glm::vec3(7.0f, 6.0f, -9.0f),
-				"Texture/realred.png"));
+		m_pButtons.push_back(
+			new Button(2.0f, glm::vec3(7.0f, 6.0f, -9.0f)));
 
 		// transparent wall
 		m_pFloor.push_back(
@@ -375,16 +374,10 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				"Texture/realwhite.png"));
 
 		// button
-		m_pWalls.push_back(
-			new Plane("Objs/roundPlane.obj",
-				glm::vec3(3.0f, 0.0f, 3.0f),
-				glm::vec3(0.0f), glm::vec3(-8.5f, 0.01f, -8.5f),
-				"Texture/realred.png"));
-		m_pWalls.push_back(
-			new Plane("Objs/roundPlane.obj",
-				glm::vec3(3.0f, 0.0f, 3.0f),
-				glm::vec3(0.0f), glm::vec3(0.f, 0.01f, 0.0f),
-				"Texture/realred.png"));
+		m_pButtons.push_back(
+			new Button(2.0f, glm::vec3(-8.5f, 0.01f, -8.5f)));
+		m_pButtons.push_back(
+			new Button(2.0f, glm::vec3(0.f, 0.01f, 0.0f)));
 
 		// transparent wall
 		m_pGlasses.push_back(
@@ -467,6 +460,7 @@ void Scene::input()
 	if (GetAsyncKeyState('S') & 0x8000) m_pPlayer->input('s');
 	if (GetAsyncKeyState('A') & 0x8000) m_pPlayer->input('a');
 	if (GetAsyncKeyState('D') & 0x8000) m_pPlayer->input('d');
+	if (GetAsyncKeyState('E') & 0x0001) m_pPlayer->input('e');
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)m_pPlayer->setJump();
 
 	if (GetAsyncKeyState('M') & 0x0001) {
@@ -504,26 +498,31 @@ void Scene::update(float frameTime)
 	// update objs
 	//----------------------------------------------
 	m_pPlayer->update(frameTime);
-	for (auto& cube : m_pCubes)
+	for (auto& cube : m_pButtons) 
 		cube->update(frameTime);
+	for (auto& cube : m_pCubes) {
+		if (cube->isFollowing()) cube->setTranslate(m_pPlayer->getTranslateVec() + foward);
+		else cube->update(frameTime);
+	}
+	
+
 	//----------------------------------------------
 	// collide check
 	//----------------------------------------------
 	//		player - floor
 	glm::vec3 playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
 	glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
-	for (auto floor : m_pFloor) {
+	for (auto& floor : m_pFloor) {
 		glm::vec3 floorMin = floor->getTranslateVec() - floor->getScaleVec() / 2.0f;
 		glm::vec3 floorMax = floor->getTranslateVec() + floor->getScaleVec() / 2.0f;
 		if (aabbCollideCheck(playerMin, playerMax, floorMin, floorMax))
 			m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
 
-		for (auto cube : m_pCubes) {
-			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 2.0f;
-			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 2.0f;
+		for (auto& cube : m_pCubes) {
+			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 20.0f;
+			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 20.0f;
 			if (aabbCollideCheck(floorMin, floorMax, cubeMin, cubeMax))
 				cube->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
-			
 		}
 	}
 
@@ -531,8 +530,6 @@ void Scene::update(float frameTime)
 	//----------------------------------------------
 	//		player - portal
 	if (m_pPortal[0] && m_pPortal[1]) {
-		bool bDoubleHit = false;
-
 		glm::vec3 origin = m_pPlayer->getFoward();
 		glm::vec3 oridir = m_pPlayer->getDir();
 
@@ -548,7 +545,9 @@ void Scene::update(float frameTime)
 
 				// rot offset
 				glm::vec3 rotOffset = distRot - srcRot;
-				if (glm::length(rotOffset) <= 0.1f || glm::length(rotOffset) >= 179.0f) rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
+				//rotOffset.y += 180.0f;
+				// 
+				if (glm::length(rotOffset) <= 0.1f) rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
 
 				glm::mat4 rotMat(1.0f);
 				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -573,17 +572,30 @@ void Scene::update(float frameTime)
 				else if (m_tCamera.pitch < -89.0f) m_tCamera.pitch = -89.0f;
 
 				// translate player
+				//glm::mat4 tempMat = getPortalView(m_pPortal[i], m_pPortal[!i]);
+				//glm::vec3 pos = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
+				//	glm::vec4(tempMat[3][0], playerPivot.y, tempMat[3][2], 1.0f);
+
+				//m_pPlayer->setTranslate(pos);
+
+
 				glm::vec3 offset = m_pPortal[!i]->getTranslateVec() - m_pPortal[i]->getTranslateVec();
-				m_pPlayer->setTranslate(playerPivot + offset);
+				
+				glm::vec3 temp = (rotMat * glm::vec4((playerPivot - m_pPortal[i]->getTranslateVec()), 1.0f));
+				temp += m_pPortal[i]->getTranslateVec();
+
+				m_pPlayer->setTranslate(temp + offset);
+
+				glm::vec3 tempDir = rotMat * glm::vec4(m_pPlayer->getDir(), 0.0f);
+				m_pPlayer->setDir(tempDir);
+				m_pPlayer->hit();
 
 #ifdef _DEBUG
-				printf("offset : ");
-				printVector(offset);
-				printf("rotate : ");
-				printVector(rotOffset);
+				printf("hit ");
+				//printVector(temp + offset);
 #endif
 				// move a little
-				m_pPlayer->moveLittle(frameTime);
+				m_pPlayer->moveLittle(frameTime * 5);
 				break;
 			}
 		}
@@ -615,6 +627,7 @@ void Scene::update(float frameTime)
 
 					glm::vec3 offset = m_pPortal[!i]->getTranslateVec() - m_pPortal[i]->getTranslateVec();
 					cube->setTranslate(cube->getTranslateVec() + offset);
+					cube->moveLittle(frameTime);
 					break;
 				}
 			}
@@ -622,58 +635,104 @@ void Scene::update(float frameTime)
 	}
 	//----------------------------------------------
 	//		player - walls
-	for (const auto& wall : m_pWalls) {
-		glm::vec3 wallMin = wall->getTranslateVec() - wall->getScaleVec() / 2.0f;
-		glm::vec3 wallMax = wall->getTranslateVec() + wall->getScaleVec() / 2.0f;
+	if (!m_pPlayer->bIsHit()) {
+		glm::vec3 playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
+		glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
+		for (const auto& wall : m_pWalls) {
+			glm::vec3 wallMin = wall->getTranslateVec() - wall->getScaleVec() / 2.0f;
+			glm::vec3 wallMax = wall->getTranslateVec() + wall->getScaleVec() / 2.0f;
 
-		if (aabbCollideCheck(playerMin, playerMax, wallMin, wallMax)) {
-			for (int i = 0; i < 3; i += 2) {
-				glm::vec3 min = playerMin;
-				glm::vec3 max = playerMax;
+			if (aabbCollideCheck(playerMin, playerMax, wallMin, wallMax)) {
+				for (int i = 0; i < 3; i += 2) {
+					glm::vec3 min = playerMin;
+					glm::vec3 max = playerMax;
 
-				// plus Face
-				min[i] = max[i];
-				if (aabbCollideCheck(min, max, wallMin, wallMax)) {
-					min = playerMin;
-					max[i] = min[i];
-					// minus Face
+					// plus Face
+					min[i] = max[i];
 					if (aabbCollideCheck(min, max, wallMin, wallMax)) {
-						glm::vec3 back(i == 2, 0, i == 0);
-						m_pPlayer->moveBack(back);
-						break;
+						min = playerMin;
+						max[i] = min[i];
+						// minus Face
+						if (aabbCollideCheck(min, max, wallMin, wallMax)) {
+							glm::vec3 back(i == 2, 0, i == 0);
+							m_pPlayer->moveBack(back);
+							break;
+						}
 					}
 				}
 			}
 		}
-	}
-	for (const auto& wall : m_pGlasses) {
-		glm::vec3 wallMin = wall->getTranslateVec() - wall->getScaleVec() / 2.0f;
-		glm::vec3 wallMax = wall->getTranslateVec() + wall->getScaleVec() / 2.0f;
+		for (const auto& wall : m_pGlasses) {
+			glm::vec3 wallMin = wall->getTranslateVec() - wall->getScaleVec() / 2.0f;
+			glm::vec3 wallMax = wall->getTranslateVec() + wall->getScaleVec() / 2.0f;
 
-		if (aabbCollideCheck(playerMin, playerMax, wallMin, wallMax)) {
-			for (int i = 0; i < 3; i += 2) {
-				glm::vec3 min = playerMin;
-				glm::vec3 max = playerMax;
+			if (aabbCollideCheck(playerMin, playerMax, wallMin, wallMax)) {
+				for (int i = 0; i < 3; i += 2) {
+					glm::vec3 min = playerMin;
+					glm::vec3 max = playerMax;
 
-				// plus Face
-				min[i] = max[i];
-				if (aabbCollideCheck(min, max, wallMin, wallMax)) {
-					min = playerMin;
-					max[i] = min[i];
-					// minus Face
+					// plus Face
+					min[i] = max[i];
 					if (aabbCollideCheck(min, max, wallMin, wallMax)) {
-						glm::vec3 back(i == 2, 0, i == 0);
-						m_pPlayer->moveBack(back);
-						break;
+						min = playerMin;
+						max[i] = min[i];
+						// minus Face
+						if (aabbCollideCheck(min, max, wallMin, wallMax)) {
+							glm::vec3 back(i == 2, 0, i == 0);
+							m_pPlayer->moveBack(back);
+							break;
+						}
 					}
 				}
 			}
+
 		}
-
 	}
-
 	//----------------------------------------------
-	//		 player button?
+	//		 player cube
+	playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
+	playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
+	if (m_pPlayer->isHoldOn()) {
+		for (auto& cube : m_pCubes) {
+			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 2.0f;
+			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 2.0f;
+			if (cube->isFollowing()) {
+				cube->setFollow(false);
+				break;
+			}
+			else if (aabbCollideCheck(playerMin, playerMax, cubeMin, cubeMax)) {
+				cube->setFollow(true);
+				break;
+			}
+		}
+	}
+	m_pPlayer->offHold();
+	
+	//----------------------------------------------
+	//		cube - buttons		
+	bool allClaer = true;
+	for (auto& button : m_pButtons) {
+		bool bPushed = false;
+		glm::vec3 buttonMin = button->getTranslateVec() - button->getScaleVec() / 2.0f;
+		glm::vec3 buttonMax = button->getTranslateVec() + button->getScaleVec() / 2.0f;
+		for (auto& cube : m_pCubes) {
+			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 2.0f;
+			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 2.0f;
+			if (aabbCollideCheck(buttonMin, buttonMax, cubeMin, cubeMax)) {
+				button->setPressState(true);
+				bPushed = true;
+				break;
+			}
+		}
+		if (!bPushed) {
+			allClaer = false;
+			button->setPressState(false);
+		}
+	}
+	if (allClaer) {
+		printf("clear!\n");
+		m_bClear = true;
+	}
 
 	//----------------------------------------------
 	// make portal
@@ -699,25 +758,6 @@ void Scene::update(float frameTime)
 			glm::vec3 wallMax = wallPos + wall->getScaleVec() / 2.0f;
 
 			if(rayAABB(wallMin, wallMax, pos, ray)) minLen = 0.0f;
-
-			/*for (int i = 0; i < 3; ++i) {
-				//if (glm::dot(ray, normals[i]) <= 0.0f) continue;
-				wallPos = wall->getTranslateVec();
-				wallPos[i] = wallMin[i];
-
-				if (glm::intersectRayPlane(pos, ray, wallPos, normals[i], dist) && dist >= 0) {
-					printf("glas dist : %.3f\n", dist);
-					cnt++;
-					minLen = glm::min(minLen, dist);
-				}
-				wallPos = wall->getTranslateVec();
-				wallPos[i] = wallMax[i];
-				if (glm::intersectRayPlane(pos, ray, wallPos, normals[i + 1], dist) && dist >= 0) {
-					printf("glas dist : %.3f\n", dist);
-					cnt++;
-					minLen = glm::min(minLen, dist);
-				}
-			}*/
 		}
 
 		printf("minLen : %.2f\tcnt : %d\n", minLen, cnt);
@@ -727,38 +767,7 @@ void Scene::update(float frameTime)
 			glm::vec3 wallMin = wallPos - wall->getScaleVec() / 2.0f;
 			glm::vec3 wallMax = wallPos + wall->getScaleVec() / 2.0f;
 
-			float xMin = (wallMin.x - pos.x) / ray.x;
-			float xMax = (wallMax.x - pos.x) / ray.x;
-			if (xMin > xMax) {
-				float temp = xMin;
-				xMin = xMax;
-				xMax = temp;
-			}
-
-			float yMin = (wallMin.y - pos.y) / ray.y;
-			float yMax = (wallMax.y - pos.y) / ray.y;
-			if (yMin > yMax) {
-				float temp = yMin;
-				yMin = yMax;
-				yMax = temp;
-			}
-
-			float zMin = (wallMin.z - pos.z) / ray.z;
-			float zMax = (wallMax.z - pos.z) / ray.z;
-			if (zMin > zMax) {
-				float temp = zMin;
-				zMin = zMax;
-				zMax = temp;
-			}
-
-			float min = (xMin > yMin) ? xMin : yMin;
-			float max = (xMax < yMax) ? xMax : yMax;
-
-			bool bHit = true;
-			if (xMin > yMax || yMin > xMax) bHit = false;
-			if (min > zMax || zMin > max) bHit = false;
-
-			if (bHit) {
+			if (rayAABB(wallMin, wallMax, pos, ray)) {
 				glm::vec3 normal = wall->getNormal();
 				if (glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()) > minLen) continue;
 
@@ -786,12 +795,7 @@ void Scene::update(float frameTime)
 				m_pPortal[m_iShoot - 1] = new Portal(1.0f, faceNum, wall->getTranslateVec(), m_iShoot - 1);
 
 				break;
-			}
-
-			/*if (glm::intersectRayPlane(m_tCamera.vEYE, glm::normalize(m_tCamera.vAT), wall->getTranslateVec(), glm::normalize(wall->getNormal()), size)) {
-				printf("OMG HIT ");
-			}*/
-			
+			}			
 		}
 		m_iShoot = 0;
 	}
@@ -836,6 +840,9 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 	// cube
 	for (auto cube : m_pCubes) 
 		cube->draw(shaderNum, textureBind);
+
+	for (auto button : m_pButtons)
+		button->draw(shaderNum, textureBind);
 	
 	// glass
 	glEnable(GL_BLEND);
@@ -951,13 +958,13 @@ void Scene::scrollMouse(int dir)
 	else m_tCamera.scroll += m_tCamera.scroll / 10;
 }
 
-glm::mat4 Scene::getPortalView(Portal* from, Portal* dist)
+glm::mat4 Scene::getPortalView(Portal* from, Portal* dest)
 {
 	glm::mat4 temp = m_tCamera.getViewMat() * from->getModelTransform();
 	glm::mat4 portalCam =
 		temp *
 		glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
-		glm::inverse(dist->getModelTransform());
+		glm::inverse(dest->getModelTransform());
 
 	return portalCam;
 }

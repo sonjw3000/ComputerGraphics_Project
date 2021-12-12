@@ -7,6 +7,7 @@ class Mesh;
 class Plane;
 class Portal;
 class Cube;
+class Button;
 
 class Scene {
 private:
@@ -19,6 +20,7 @@ public:
 
 private:
 	int m_iShoot = 0;
+	bool m_bClear = false;
 
 private:
 	std::vector<Plane*> m_pFloor;
@@ -26,6 +28,7 @@ private:
 	std::vector<Plane*> m_pWalls;
 	std::vector<Plane*> m_pGlasses;
 	std::vector<Plane*> m_pPortalWalls;
+	std::vector<Button*> m_pButtons;
 
 	Player* m_pPlayer;
 

@@ -43,6 +43,16 @@ void Cube::update(float deltaTime) {
 	m_vBefMove = offset;
 }
 
+bool Cube::isFollowing() const
+{
+	return m_bFollowPlayer;
+}
+
+void Cube::setFollow(bool flag)
+{
+	m_bFollowPlayer = flag;
+}
+
 void Cube::moveBack(glm::vec3 backHow)
 {
 	if (backHow.y != 0.0f) {
@@ -53,4 +63,11 @@ void Cube::moveBack(glm::vec3 backHow)
 	backHow = backHow * m_vBefMove;
 
 	this->setTranslate(m_vPivot - backHow);
+}
+
+void Cube::moveLittle(float deltaTime)
+{
+	glm::vec3 offset(0.0f);
+	offset.y += m_fFallingSpeed * deltaTime;
+	setTranslate(m_vPivot + offset * deltaTime);
 }

@@ -20,7 +20,15 @@ public:
 	void draw(unsigned int shaderNum, int bindTex);
 	void update(float deltaTime);
 
+private:
+	bool m_bFollowPlayer = false;
+
+public:
+	bool isFollowing() const;
+	void setFollow(bool flag);
+
 public:
 	void moveBack(glm::vec3 backHow);
+	void moveLittle(float deltaTime);
 };
 

@@ -26,7 +26,12 @@ public:
 private:
 	glm::vec3 m_vBefMove = glm::vec3(0.0f);
 
+private:
+	bool m_bHitPortal = false;
+
 public:
+	bool bIsHit() const;
+	void hit();
 
 private:
 	glm::vec3 m_vLeftRot;
@@ -36,6 +41,13 @@ private:
 private:
 	glm::vec3 m_vDir;
 	glm::vec3 m_vForward;
+
+private:
+	bool m_bHoldOn = false;
+
+public:
+	bool isHoldOn() const;
+	void offHold();
 
 public:
 	void input(char key);
