@@ -562,7 +562,6 @@ void Scene::update(float frameTime)
 
 	//----------------------------------------------
 	//		player - walls
-
 	for (const auto& wall : m_pWalls) {
 		glm::vec3 wallMin = wall->getTranslateVec() - wall->getScaleVec() / 2.0f;
 		glm::vec3 wallMax = wall->getTranslateVec() + wall->getScaleVec() / 2.0f;
@@ -623,8 +622,8 @@ void Scene::update(float frameTime)
 		// do sth like intersect check
 
 		for (auto const& wall : m_pPortalWalls) {
-			float size = glm::length(wall->getScaleVec() / 2.0f);
-			if (glm::intersectRayPlane(m_tCamera.vEYE, m_tCamera.vAT, wall->getTranslateVec(), wall->getNormal(), size)) {
+			float size = 0.0f;
+			if (glm::intersectRayPlane(m_tCamera.vEYE, glm::normalize(m_tCamera.vAT), wall->getTranslateVec(), glm::normalize(wall->getNormal()), size)) {
 				printf("OMG HIT ");
 			}
 		}
