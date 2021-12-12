@@ -13,6 +13,10 @@ inline void printVector(glm::vec3 vec)
 	printf("%.2f, %.2f, %.2f\n", vec.x, vec.y, vec.z);
 }
 
+inline bool isSameFloat(float a, float b)
+{
+	return abs(a - b) < 0.01f;
+}
 
 Scene::Scene(int sceneNum, CameraVectors& cam) :
 	m_pPortal{ nullptr, nullptr },
@@ -250,12 +254,12 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				"Texture/realred.png"));
 
 		// transparent wall
-		m_pGlasses.push_back(
+		m_pFloor.push_back(
 			new Plane("Objs/Cube.obj",
 				glm::vec3(2.0f, 0.1f, 2.0f),
 				glm::vec3(0.0f), glm::vec3(7.0f, 5.99f, -9.0f),
 				"Texture/alphablue.png"));
-		m_pGlasses.push_back(
+		m_pFloor.push_back(
 			new Plane("Objs/Cube.obj",
 				glm::vec3(2.0f, 0.1f, 2.0f),
 				glm::vec3(0.0f), glm::vec3(-9.0f, 8.0f, 7.0f),
@@ -547,11 +551,14 @@ void Scene::update(float frameTime)
 
 				// rot offset
 				glm::vec3 rotOffset = distRot - srcRot;
+				if (glm::length(rotOffset) <= 0.1f || glm::length(rotOffset) >= 179.0f) rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
 
 				glm::mat4 rotMat(1.0f);
 				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f));
 				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.y), glm::vec3(0.0f, 1.0f, 0.0f));
 				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+				//rotMat = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * rotMat;
 
 				// rotate camera
 				if (m_tCamera.fpsMode) {
@@ -573,7 +580,10 @@ void Scene::update(float frameTime)
 				m_pPlayer->setTranslate(playerPivot + offset);
 
 #ifdef _DEBUG
+				printf("offset : ");
 				printVector(offset);
+				printf("rotate : ");
+				printVector(rotOffset);
 #endif
 				// move a little
 				m_pPlayer->moveLittle(frameTime);
@@ -644,57 +654,84 @@ void Scene::update(float frameTime)
 		float minLen = INFINITE;
 		int cnt = 0;
 		glm::vec3 ray = m_tCamera.vAT;
-
-		for (auto const& wall : m_pWalls) {
-			glm::vec3 offsetRay = ray;
-			//printVector(glm::normalize(offsetRay));
-			glm::vec3 offsetNor = wall->getNormal();
-			//glm::vec3 objDir = glm::normalize(wall->getTranslateVec() - m_pPlayer->getTranslateVec());
-			//float dot = glm::dot(ray, objDir);
-			//float dot = glm::dot(ray, offsetNor);
-			//float Epsilon = std::numeric_limits<float>::epsilon();
-			float dist = 0.0f;
-
-			if (glm::intersectRayPlane(m_pPlayer->getTranslateVec(), ray, wall->getTranslateVec(), offsetNor, dist))
-			{
-				printf("wall dist : %.3f\n", dist);
-				cnt++;
-				minLen = glm::min(minLen, glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()));
-			}
-
-
-			//if (0.98f < dot && dot <= 1.0f) 
-			//	minLen = glm::min(minLen, glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()));
-			
-		}
+		glm::vec3 pos = m_tCamera.vEYE;
+		glm::vec3 normals[6] = {
+			{1.0f, 0.0f, 0.0f},
+			{-1.0f, 0.0f, 0.0f},
+			{0.0f, 1.0f, 0.0f},
+			{0.0f, -1.0f, 0.0f},
+			{0.0f, 0.0f, 1.0f},
+			{0.0f, 0.0f, -1.0f},
+		};
 		for (auto const& wall : m_pGlasses) {
-			glm::vec3 offsetRay = ray;
-			glm::vec3 offsetNor = wall->getNormal();
-			//printVector(glm::normalize(offsetRay));
 			float dist = 0.0f;
+			glm::vec3 wallPos = wall->getTranslateVec();
+			glm::vec3 wallMin = wallPos - wall->getScaleVec() / 2.0f;
+			glm::vec3 wallMax = wallPos + wall->getScaleVec() / 2.0f;
 
-			if (glm::intersectRayPlane(m_pPlayer->getTranslateVec(), ray, wall->getTranslateVec(), offsetNor, dist))
-			{
-				printf("glas dist : %.3f\n", dist);
-				cnt++;
-				minLen = glm::min(minLen, glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()));
-			}
+			if(rayAABB(wallMin, wallMax, pos, ray)) minLen = 0.0f;
 
+			/*for (int i = 0; i < 3; ++i) {
+				//if (glm::dot(ray, normals[i]) <= 0.0f) continue;
+				wallPos = wall->getTranslateVec();
+				wallPos[i] = wallMin[i];
 
-			//if (0.98f < dot && dot <= 1.0f) 
-			//	minLen = glm::min(minLen, glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()));
-
+				if (glm::intersectRayPlane(pos, ray, wallPos, normals[i], dist) && dist >= 0) {
+					printf("glas dist : %.3f\n", dist);
+					cnt++;
+					minLen = glm::min(minLen, dist);
+				}
+				wallPos = wall->getTranslateVec();
+				wallPos[i] = wallMax[i];
+				if (glm::intersectRayPlane(pos, ray, wallPos, normals[i + 1], dist) && dist >= 0) {
+					printf("glas dist : %.3f\n", dist);
+					cnt++;
+					minLen = glm::min(minLen, dist);
+				}
+			}*/
 		}
 
 		printf("minLen : %.2f\tcnt : %d\n", minLen, cnt);
 
 		for (auto const& wall : m_pPortalWalls) {
-			glm::vec3 normal = wall->getNormal();
-			glm::vec3 objDir = glm::normalize(wall->getTranslateVec() - m_pPlayer->getTranslateVec());
-			float dot = glm::dot(ray, objDir);
+			glm::vec3 wallPos = wall->getTranslateVec();
+			glm::vec3 wallMin = wallPos - wall->getScaleVec() / 2.0f;
+			glm::vec3 wallMax = wallPos + wall->getScaleVec() / 2.0f;
 
-			if (0.98f < dot && dot <= 1.0f) {
-				//if (glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()) > minLen) continue;
+			float xMin = (wallMin.x - pos.x) / ray.x;
+			float xMax = (wallMax.x - pos.x) / ray.x;
+			if (xMin > xMax) {
+				float temp = xMin;
+				xMin = xMax;
+				xMax = temp;
+			}
+
+			float yMin = (wallMin.y - pos.y) / ray.y;
+			float yMax = (wallMax.y - pos.y) / ray.y;
+			if (yMin > yMax) {
+				float temp = yMin;
+				yMin = yMax;
+				yMax = temp;
+			}
+
+			float zMin = (wallMin.z - pos.z) / ray.z;
+			float zMax = (wallMax.z - pos.z) / ray.z;
+			if (zMin > zMax) {
+				float temp = zMin;
+				zMin = zMax;
+				zMax = temp;
+			}
+
+			float min = (xMin > yMin) ? xMin : yMin;
+			float max = (xMax < yMax) ? xMax : yMax;
+
+			bool bHit = true;
+			if (xMin > yMax || yMin > xMax) bHit = false;
+			if (min > zMax || zMin > max) bHit = false;
+
+			if (bHit) {
+				glm::vec3 normal = wall->getNormal();
+				if (glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()) > minLen) continue;
 
 				// make new portal
 				if (m_pPortal[m_iShoot - 1]) delete m_pPortal[m_iShoot - 1];
@@ -710,7 +747,7 @@ void Scene::update(float frameTime)
 				else if (normal.z >= 0.9f) faceNum = 0;
 				else if (normal.z <= -0.9f) faceNum = 2;
 				else if (normal.y >= 0.9f) faceNum = 4;
-				else if (normal.y <= -0.9f) faceNum = 5;
+				else faceNum = 5;
 
 #ifdef _DEBUG
 				printf("Face Num : %d \t", faceNum);
@@ -727,8 +764,6 @@ void Scene::update(float frameTime)
 			}*/
 			
 		}
-
-
 		m_iShoot = 0;
 	}
 

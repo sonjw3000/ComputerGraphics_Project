@@ -27,3 +27,38 @@ bool obbCollideCheck()
 {
 	return false;
 }
+
+bool rayAABB(glm::vec3 vMin, glm::vec3 vMax, glm::vec3 rayStart, glm::vec3 rayDir)
+{
+	float xMin = (vMin.x - rayStart.x) / rayDir.x;
+	float xMax = (vMax.x - rayStart.x) / rayDir.x;
+	if (xMin > xMax) {
+		float temp = xMin;
+		xMin = xMax;
+		xMax = temp;
+	}
+
+	float yMin = (vMin.y - rayStart.y) / rayDir.y;
+	float yMax = (vMax.y - rayStart.y) / rayDir.y;
+	if (yMin > yMax) {
+		float temp = yMin;
+		yMin = yMax;
+		yMax = temp;
+	}
+
+	float zMin = (vMin.z - rayStart.z) / rayDir.z;
+	float zMax = (vMax.z - rayStart.z) / rayDir.z;
+	if (zMin > zMax) {
+		float temp = zMin;
+		zMin = zMax;
+		zMax = temp;
+	}
+
+	float min = (xMin > yMin) ? xMin : yMin;
+	float max = (xMax < yMax) ? xMax : yMax;
+
+	if (xMin > yMax || yMin > xMax) return false;
+	if (min > zMax || zMin > max) return false;
+
+	return true;
+}

@@ -287,12 +287,9 @@ void Single::keyboardChecker(unsigned char key, int x, int y)
 		break;
 
 	case 'p':
-		glutSetCursor(GLUT_CURSOR_NONE);
-		CORE->m_bHideCursor = true;
-		break;
 	case 'P':
-		glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
-		CORE->m_bHideCursor = false;
+		CORE->m_bHideCursor =! CORE->m_bHideCursor;
+		glutSetCursor(CORE->m_bHideCursor ? GLUT_CURSOR_NONE : GLUT_CURSOR_LEFT_ARROW);
 		break;
 
 	case '0':
