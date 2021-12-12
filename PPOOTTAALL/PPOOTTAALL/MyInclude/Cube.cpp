@@ -31,15 +31,26 @@ void Cube::update(float deltaTime) {
 	static float fMoveSpeed = 5.0f;
 	static float fGravity = 35.28f;			// 9.8m/s * 60 * 60 / 1000
 
-	glm::vec3 offset = m_vDir;
-	offset.x *= fMoveSpeed * deltaTime;
+	glm::vec3 offset(0.0f);
 	offset.y += m_fFallingSpeed * deltaTime;
-	offset.z *= fMoveSpeed * deltaTime;
 
 	m_fFallingSpeed -= fGravity * deltaTime;
 	if (m_fFallingSpeed <= -216.0f) m_fFallingSpeed = -216.0f;		// terminal falling speed
-	if (m_bJump && !m_bFalling && m_fFallingSpeed <= 0.0f) m_bFalling = true;
 
 	//glm::vec3 offset = m_vDir * fMoveSpeed * deltaTime;
 	this->setTranslate(m_vPivot + offset);
+
+	m_vBefMove = offset;
+}
+
+void Cube::moveBack(glm::vec3 backHow)
+{
+	if (backHow.y != 0.0f) {
+		m_bFalling = false;
+		m_fFallingSpeed = 0.0f;
+	}
+
+	backHow = backHow * m_vBefMove;
+
+	this->setTranslate(m_vPivot - backHow);
 }

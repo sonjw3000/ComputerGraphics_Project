@@ -516,7 +516,8 @@ void Scene::update(float frameTime)
 	// update objs
 	//----------------------------------------------
 	m_pPlayer->update(frameTime);
-
+	for (auto& cube : m_pCubes)
+		cube->update(frameTime);
 	//----------------------------------------------
 	// collide check
 	//----------------------------------------------
@@ -528,6 +529,14 @@ void Scene::update(float frameTime)
 		glm::vec3 floorMax = floor->getTranslateVec() + floor->getScaleVec() / 2.0f;
 		if (aabbCollideCheck(playerMin, playerMax, floorMin, floorMax))
 			m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
+
+		for (auto cube : m_pCubes) {
+			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 2.0f;
+			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 2.0f;
+			if (aabbCollideCheck(floorMin, floorMax, cubeMin, cubeMax))
+				cube->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
+			
+		}
 	}
 
 
@@ -593,6 +602,37 @@ void Scene::update(float frameTime)
 	}
 
 	//----------------------------------------------
+	//		cube - portal
+	if (m_pPortal[0] && m_pPortal[1]) {
+		for (auto cube : m_pCubes) {
+			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 2.0f;
+			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 2.0f;
+			for (int i = 0; i < 2; ++i) {
+				glm::vec3 portalMin = m_pPortal[i]->getTranslateVec() - m_pPortal[i]->getScaleVec() / 2.0f;
+				glm::vec3 portalMax = m_pPortal[i]->getTranslateVec() + m_pPortal[i]->getScaleVec() / 2.0f;
+
+				if (aabbCollideCheck(portalMin, portalMax, cubeMin, cubeMax)) {
+					// set new Forward
+					glm::vec3 distRot = m_pPortal[!i]->getRotateVec();
+					glm::vec3 srcRot = m_pPortal[i]->getRotateVec();
+
+					// rot offset
+					glm::vec3 rotOffset = distRot - srcRot;
+					if (glm::length(rotOffset) <= 0.1f || glm::length(rotOffset) >= 179.0f) rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
+
+					glm::mat4 rotMat(1.0f);
+					rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f));
+					rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.y), glm::vec3(0.0f, 1.0f, 0.0f));
+					rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+					glm::vec3 offset = m_pPortal[!i]->getTranslateVec() - m_pPortal[i]->getTranslateVec();
+					cube->setTranslate(cube->getTranslateVec() + offset);
+					break;
+				}
+			}
+		}
+	}
+	//----------------------------------------------
 	//		player - walls
 	for (const auto& wall : m_pWalls) {
 		glm::vec3 wallMin = wall->getTranslateVec() - wall->getScaleVec() / 2.0f;
@@ -641,6 +681,7 @@ void Scene::update(float frameTime)
 				}
 			}
 		}
+
 	}
 
 	//----------------------------------------------

@@ -5,11 +5,12 @@ class TextureClass;
 
 class Cube : public Mesh {
 	TextureClass* m_pTexture;
-	glm::vec3 m_vDir;
-	glm::vec3 m_vForward;
-	bool m_bJump = false;
+
+	glm::vec3 m_vBefMove = glm::vec3(0.0f);
 	bool m_bFalling = false;
+
 	float m_fFallingSpeed = 0.0f;
+
 public:
 	Cube() = delete;
 	Cube(const char* objFile, glm::vec3 s, glm::vec3 r, glm::vec3 t, const char* texFile);
@@ -18,5 +19,8 @@ public:
 public:
 	void draw(unsigned int shaderNum, int bindTex);
 	void update(float deltaTime);
+
+public:
+	void moveBack(glm::vec3 backHow);
 };
 
