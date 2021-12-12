@@ -16,10 +16,9 @@ inline void printVector(glm::vec3 vec)
 
 Scene::Scene(int sceneNum, CameraVectors& cam) :
 	m_pPortal{ nullptr, nullptr },
-	m_pFloor(nullptr),
 	m_iSceneNum(sceneNum)
 {
-	m_pFloor = new Plane("Objs/Plane.obj", glm::vec3(21.0f, 0.1f, 21.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
+	m_pFloor.push_back(new Plane("Objs/Plane.obj", glm::vec3(21.0f, 0.1f, 21.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png"));
 	m_pPlayer = new Player(0.4f, glm::vec3(0.0f));
 
 	// right
@@ -293,7 +292,7 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				"Texture/alphablue.png"));
 		break;
 	case 2:
-		m_pPlayer->setTranslate(glm::vec3(9.0f, 1.0f, -9.0f));
+		m_pPlayer->setTranslate(glm::vec3(9.5f, 5.0f, -9.5f));
 		m_pCubes.push_back(
 			new Cube("Objs/PortalCube.obj",
 				glm::vec3(0.5f, 0.5f, 0.5f),
@@ -311,38 +310,38 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(9.5f, 0.001f, 9.0f),
+				glm::vec3(9.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(8.5f, 0.001f, 9.0f),
+				glm::vec3(8.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(7.5f, 0.001f, 9.0f),
+				glm::vec3(7.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(-9.5f, 0.001f, 9.0f),
+				glm::vec3(-9.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(-8.5f, 0.001f, 9.0f),
+				glm::vec3(-8.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(-7.5f, 0.001f, 9.0f),
+				glm::vec3(-7.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 
 		m_pPortalWalls.push_back(
@@ -387,28 +386,48 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 		m_pWalls.push_back(
 			new Plane("Objs/roundPlane.obj",
 				glm::vec3(3.0f, 0.0f, 3.0f),
-				glm::vec3(0.0f), glm::vec3(-8.5f, 0.001f, -8.5f),
+				glm::vec3(0.0f), glm::vec3(-8.5f, 0.01f, -8.5f),
 				"Texture/realred.png"));
 		m_pWalls.push_back(
 			new Plane("Objs/roundPlane.obj",
 				glm::vec3(3.0f, 0.0f, 3.0f),
-				glm::vec3(0.0f), glm::vec3(0.f, 0.001f, 0.0f),
+				glm::vec3(0.0f), glm::vec3(0.f, 0.01f, 0.0f),
 				"Texture/realred.png"));
 
 		// transparent wall
-		m_pWalls.push_back(
+		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
 				glm::vec3(3.0f, 0.0f, 2.0f),
 				glm::vec3(180.0f, 0.0f, 0.0f),
 				glm::vec3(0.0f, 6.99f, 0.0f),
-				"Texture/realblack.png"));
+				"Texture/alphared.png"));
 
-		m_pWalls.push_back(
+		m_pFloor.push_back(
 			new Plane("Objs/Cube.obj",
-				glm::vec3(1.5f, 0.0f, 1.5f),
+				glm::vec3(1.1f, 0.0f, 1.1f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(0.0f, 6.99f, 0.0f),
-				"Texture/realblack.png"));
+				glm::vec3(9.5f, 4.0f, -9.5f),
+				"Texture/alphablue.png"));
+
+		m_pFloor.push_back(
+			new Plane("Objs/Cube.obj",
+				glm::vec3(1.1f, 0.0f, 1.1f),
+				glm::vec3(0.0f, 0.0f, 0.0f),
+				glm::vec3(9.5f, 5.2f, -9.5f),
+				"Texture/alphablue.png"));
+
+		m_pGlasses.push_back(
+			new Plane("Objs/Cube.obj",
+				glm::vec3(1.2f, 1.0f, 0.1f),
+				glm::vec3(0.0f, 0.0f, 0.0f),
+				glm::vec3(9.5f, 4.3f, -9.0f),
+				"Texture/alphablue.png"));
+		m_pGlasses.push_back(
+			new Plane("Objs/Cube.obj",
+				glm::vec3(1.2f, 1.0f, 0.1f),
+				glm::vec3(0.0f, 90.0f, 0.0f),
+				glm::vec3(9.f, 4.3f, -9.5f),
+				"Texture/alphablue.png"));
 		//glasses
 
 		break;
@@ -431,12 +450,14 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 
 Scene::~Scene()
 {
-	delete m_pFloor;
 	delete m_pPlayer;
 
 	for (int i = 0; i < 2; ++i)
 		if (m_pPortal[i]) delete m_pPortal[i];
-
+	for (auto& floor : m_pFloor) {
+		delete floor;
+	}
+	m_pFloor.clear();
 	for (auto& wall : m_pWalls) {
 		delete wall;
 	}
@@ -498,10 +519,13 @@ void Scene::update(float frameTime)
 	//		player - floor
 	glm::vec3 playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
 	glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
-	glm::vec3 floorMin = m_pFloor->getTranslateVec() - m_pFloor->getScaleVec() / 2.0f;
-	glm::vec3 floorMax = m_pFloor->getTranslateVec() + m_pFloor->getScaleVec() / 2.0f;
-	if (aabbCollideCheck(playerMin, playerMax, floorMin, floorMax))
-		m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
+	for (auto floor : m_pFloor) {
+		glm::vec3 floorMin = floor->getTranslateVec() - floor->getScaleVec() / 2.0f;
+		glm::vec3 floorMax = floor->getTranslateVec() + floor->getScaleVec() / 2.0f;
+		if (aabbCollideCheck(playerMin, playerMax, floorMin, floorMax))
+			m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
 
 	//----------------------------------------------
 	//		player - portal
@@ -683,7 +707,9 @@ void Scene::update(float frameTime)
 void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 {
 	// draw all
-	m_pFloor->draw(shaderNum, textureBind);
+	for (auto floor : m_pFloor) {
+		floor->draw(shaderNum, textureBind);
+	}
 
 	for (auto wall : m_pWalls) {
 		wall->draw(shaderNum, textureBind);
