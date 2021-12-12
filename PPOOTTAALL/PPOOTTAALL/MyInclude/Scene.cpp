@@ -126,27 +126,15 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				"Texture/alphablue.png"));
 		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
-				glm::vec3(0.1f, 1.0f, 10.0f),
+				glm::vec3(0.1f, 1.0f, 20.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(0.0f, 0.5f, -5.08f),
-				"Texture/alphablue.png"));
-		m_pGlasses.push_back(
-			new Plane("Objs/Cube.obj",
-				glm::vec3(0.1f, 1.0f, 10.0f),
-				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(0.0f, 0.5f, 5.08f),
-				"Texture/alphablue.png"));
-		m_pGlasses.push_back(
-			new Plane("Objs/Cube.obj",
-				glm::vec3(0.1f, 0.5f, 20.0f),
-				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(-0.05f, 0.03f, 0.0f),
+				glm::vec3(0.0f, 0.f, 0.0f),
 				"Texture/alphablue.png"));
 		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
 				glm::vec3(0.1f, 10.0f, 20.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(-0.05f, 5.7f, 0.0f),
+				glm::vec3(0.0f, 6.f, 0.0f),
 				"Texture/alphablue.png"));
 
 		//m_pPortal[0] = new Portal(1.0f, 2, glm::vec3(5.0f, 1.0f, 10.0f));
