@@ -6,7 +6,7 @@
 #include "Player.h"
 #include "Portal.h"
 #include "CollisionCheck.h"
-
+#include <gl/glm/gtx/intersect.hpp>
 
 inline void printVector(glm::vec3 vec)
 {
@@ -114,7 +114,7 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				"Texture/realred.png"));
 
 		// transparent wall
-		m_pGlasses.push_back(
+		m_pFloor.push_back(
 			new Plane("Objs/Cube.obj",
 				glm::vec3(2.0f, 0.1f, 2.0f),
 				glm::vec3(0.0f),
@@ -600,7 +600,7 @@ void Scene::update(float frameTime)
 					max[i] = min[i];
 					// minus Face
 					if (aabbCollideCheck(min, max, wallMin, wallMax)) {
-						glm::vec3 back(i == 2, 0.0f, i == 0);
+						glm::vec3 back(i == 2, 0, i == 0);
 						m_pPlayer->moveBack(back);
 						break;
 					}
@@ -624,7 +624,7 @@ void Scene::update(float frameTime)
 					max[i] = min[i];
 					// minus Face
 					if (aabbCollideCheck(min, max, wallMin, wallMax)) {
-						glm::vec3 back(i == 2, 0.0f, i == 0);
+						glm::vec3 back(i == 2, 0, i == 0);
 						m_pPlayer->moveBack(back);
 						break;
 					}
@@ -636,23 +636,67 @@ void Scene::update(float frameTime)
 	//----------------------------------------------
 	//		 player button?
 
-
 	//----------------------------------------------
 	// make portal
 	//----------------------------------------------
+	// do sth like intersect check
 	if (m_iShoot) {
-		// do sth like intersect check
+		float minLen = INFINITE;
+		int cnt = 0;
+		glm::vec3 ray = m_tCamera.vAT;
+
+		for (auto const& wall : m_pWalls) {
+			glm::vec3 offsetRay = ray;
+			//printVector(glm::normalize(offsetRay));
+			glm::vec3 offsetNor = wall->getNormal();
+			//glm::vec3 objDir = glm::normalize(wall->getTranslateVec() - m_pPlayer->getTranslateVec());
+			//float dot = glm::dot(ray, objDir);
+			//float dot = glm::dot(ray, offsetNor);
+			//float Epsilon = std::numeric_limits<float>::epsilon();
+			float dist = 0.0f;
+
+			if (glm::intersectRayPlane(m_pPlayer->getTranslateVec(), ray, wall->getTranslateVec(), offsetNor, dist))
+			{
+				printf("wall dist : %.3f\n", dist);
+				cnt++;
+				minLen = glm::min(minLen, glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()));
+			}
+
+
+			//if (0.98f < dot && dot <= 1.0f) 
+			//	minLen = glm::min(minLen, glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()));
+			
+		}
+		for (auto const& wall : m_pGlasses) {
+			glm::vec3 offsetRay = ray;
+			glm::vec3 offsetNor = wall->getNormal();
+			//printVector(glm::normalize(offsetRay));
+			float dist = 0.0f;
+
+			if (glm::intersectRayPlane(m_pPlayer->getTranslateVec(), ray, wall->getTranslateVec(), offsetNor, dist))
+			{
+				printf("glas dist : %.3f\n", dist);
+				cnt++;
+				minLen = glm::min(minLen, glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()));
+			}
+
+
+			//if (0.98f < dot && dot <= 1.0f) 
+			//	minLen = glm::min(minLen, glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()));
+
+		}
+
+		printf("minLen : %.2f\tcnt : %d\n", minLen, cnt);
 
 		for (auto const& wall : m_pPortalWalls) {
-			glm::vec3 ray = m_tCamera.vAT;
-
+			glm::vec3 normal = wall->getNormal();
 			glm::vec3 objDir = glm::normalize(wall->getTranslateVec() - m_pPlayer->getTranslateVec());
-
 			float dot = glm::dot(ray, objDir);
 
 			if (0.98f < dot && dot <= 1.0f) {
-				glm::vec3 planeNormal = wall->getNormal();
+				//if (glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec()) > minLen) continue;
 
+				// make new portal
 				if (m_pPortal[m_iShoot - 1]) delete m_pPortal[m_iShoot - 1];
 
 				// set new position
@@ -661,19 +705,19 @@ void Scene::update(float frameTime)
 				glm::vec3 newPos = m_tCamera.vEYE + lenth * ray;
 
 				int faceNum = -1;
-				if (planeNormal.x >= 0.9f) faceNum = 1;
-				else if (planeNormal.x <= -0.9f) faceNum = 3;
-				else if (planeNormal.z >= 0.9f) faceNum = 0;
-				else if (planeNormal.z <= -0.9f) faceNum = 2;
-				else if (planeNormal.y >= 0.9f) faceNum = 4;
-				else if (planeNormal.y <= -0.9f) faceNum = 5;
+				if (normal.x >= 0.9f) faceNum = 1;
+				else if (normal.x <= -0.9f) faceNum = 3;
+				else if (normal.z >= 0.9f) faceNum = 0;
+				else if (normal.z <= -0.9f) faceNum = 2;
+				else if (normal.y >= 0.9f) faceNum = 4;
+				else if (normal.y <= -0.9f) faceNum = 5;
 
 #ifdef _DEBUG
 				printf("Face Num : %d \t", faceNum);
 				printf("normal : ");
+				printVector(normal);
 #endif // DEBUG
-				printVector(planeNormal);
-				m_pPortal[m_iShoot - 1] = new Portal(1.0f, faceNum, wall->getTranslateVec());
+				m_pPortal[m_iShoot - 1] = new Portal(1.0f, faceNum, wall->getTranslateVec(), m_iShoot - 1);
 
 				break;
 			}
@@ -707,28 +751,35 @@ void Scene::update(float frameTime)
 void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 {
 	// draw all
-	for (auto floor : m_pFloor) {
+	// floor
+	for (auto floor : m_pFloor) 
 		floor->draw(shaderNum, textureBind);
-	}
-
-	for (auto wall : m_pWalls) {
+	
+	// wall
+	for (auto wall : m_pWalls) 
 		wall->draw(shaderNum, textureBind);
-	}
-
-	for (auto portalwall : m_pPortalWalls) {
+	
+	// portal wall
+	for (auto portalwall : m_pPortalWalls) 
 		portalwall->draw(shaderNum, textureBind);
-	}
-	//m_pPortal[0]->draw(shaderNum, textureBind);
-	//m_pPortal[1]->draw(shaderNum, textureBind);
-	for (auto cube : m_pCubes) {
+	
+	// empty portal
+	if (m_pPortal[0] && !m_pPortal[1]) 
+		m_pPortal[0]->draw(shaderNum, textureBind);
+	if (!m_pPortal[0] && m_pPortal[1]) 
+		m_pPortal[1]->draw(shaderNum, textureBind);
+
+	// cube
+	for (auto cube : m_pCubes) 
 		cube->draw(shaderNum, textureBind);
-	}
+	
+	// glass
 	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	for (auto glass : m_pGlasses) {
+	for (auto glass : m_pGlasses) 
 		glass->draw(shaderNum, textureBind);
-	}
+	
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH);
 	if (m_tCamera.fpsMode && !main) m_pPlayer->draw(shaderNum, textureBind);
@@ -810,7 +861,7 @@ void Scene::mouseActFucn(int key, int state, POINT pt)
 {
 	m_tBefPoint = pt;
 
-	if (m_bHidenCursor) {
+	if (CORE->m_bHideCursor) {
 		// shoot blue
 		if (key == GLUT_LEFT_BUTTON && state == GLUT_DOWN) m_iShoot = 1;
 

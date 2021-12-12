@@ -2,7 +2,7 @@
 #include "TextureClass.h"
 
 //  facing 0 : it's +z, 1 -x, =y, -y, +z, -z
-Portal::Portal(float size, int faceNum, glm::vec3 translate) :
+Portal::Portal(float size, int faceNum, glm::vec3 translate, int type) :
 	Mesh("Objs/Cube.obj", glm::vec3(0.01f, 2.0f, 1.0f) * size, glm::vec3(0.0f), translate/* + glm::vec3(0.0f, 1.0f, 0.0f) * size*/),
 	m_pTexture(nullptr),
 	m_iFaceNum(faceNum)
@@ -33,6 +33,10 @@ Portal::Portal(float size, int faceNum, glm::vec3 translate) :
 	}
 
 	setRotate(rot);
+
+	std::string temp = "Texture/portal/";
+
+	m_pTexture = new TextureClass((temp + (type ? "orange" : "blue") + ".png").c_str());
 
 }
 

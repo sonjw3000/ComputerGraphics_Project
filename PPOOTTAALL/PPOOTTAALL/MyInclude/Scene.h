@@ -16,7 +16,6 @@ private:
 
 public:
 	CameraVectors m_tCamera;
-	bool m_bHidenCursor = false;
 
 private:
 	int m_iShoot = 0;

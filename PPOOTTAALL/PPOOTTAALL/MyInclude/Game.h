@@ -8,7 +8,6 @@
 #include <gl/glm/gtc/type_ptr.hpp>
 #include <gl/glm/glm.hpp>
 #include <gl/glm/ext.hpp>
-#include <gl/glm/gtx/intersect.hpp>
 
 // 
 #include <iostream>

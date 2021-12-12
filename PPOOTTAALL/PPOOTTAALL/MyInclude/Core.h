@@ -53,6 +53,7 @@ private:
 public:
 	void updateViewMat();
 	void updateProjMat();
+	bool m_bHideCursor = false;
 
 public:
 	glm::mat4 m_mProjMat;
@@ -66,7 +67,6 @@ public:
 	void drawSkyCube();
 
 private:
-	bool m_bHideCursor = false;
 
 private:
 	glm::vec3 m_vLightPos;

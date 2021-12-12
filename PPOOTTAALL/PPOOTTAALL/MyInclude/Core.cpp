@@ -215,7 +215,6 @@ void Single::drawScene()
 	CORE->m_pDepthMap->bindTexture(0);
 
 	// draw stencil pattern
-	//glClear(GL_STENCIL_BUFFER_BIT);
 
 	// portal draw
 	CORE->m_pScene->drawPortal(CORE->m_pMainShader->getProgram(), 1);
@@ -289,12 +288,10 @@ void Single::keyboardChecker(unsigned char key, int x, int y)
 
 	case 'p':
 		glutSetCursor(GLUT_CURSOR_NONE);
-		CORE->m_pScene->m_bHidenCursor = true;
 		CORE->m_bHideCursor = true;
 		break;
 	case 'P':
 		glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
-		CORE->m_pScene->m_bHidenCursor = false;
 		CORE->m_bHideCursor = false;
 		break;
 

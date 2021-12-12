@@ -12,7 +12,7 @@ class Portal :
 
 public:
 	Portal() = delete;
-	Portal(float size, int faceNum, glm::vec3 translate);
+	Portal(float size, int faceNum, glm::vec3 translate, int type);
 	~Portal();
 
 public:
