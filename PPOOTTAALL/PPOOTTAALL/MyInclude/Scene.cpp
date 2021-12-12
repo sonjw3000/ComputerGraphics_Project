@@ -58,8 +58,6 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 			glm::vec3(0.0f, 5.0f, 10.0f),
 			"Texture/wall.png"));
 
-
-
 	switch (sceneNum) {
 	case 0:
 		// player
@@ -437,22 +435,25 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 
 Scene::~Scene()
 {
-	delete m_pPlayer;
 
 	for (int i = 0; i < 2; ++i)
 		if (m_pPortal[i]) delete m_pPortal[i];
-	for (auto& floor : m_pFloor) {
-		delete floor;
-	}
-	m_pFloor.clear();
-	for (auto& wall : m_pWalls) {
-		delete wall;
-	}
+
+	for (auto& floor : m_pFloor) delete floor;
+	for (auto& wall : m_pWalls) delete wall;
+	for (auto& glass : m_pGlasses)delete glass;
+	for (auto& glass : m_pPortalWalls)delete glass;
+	for (auto& button : m_pButtons)delete button;
+	for (auto& cube : m_pCubes) delete cube;
+
+	m_pFloor.clear();	
 	m_pWalls.clear();
-	for (auto& cube : m_pCubes) {
-		delete cube;
-	}
+	m_pGlasses.clear();
+	m_pPortalWalls.clear();
+	m_pButtons.clear();
 	m_pCubes.clear();
+
+	delete m_pPlayer;
 }
 
 void Scene::input()
@@ -505,7 +506,7 @@ void Scene::update(float frameTime)
 	for (auto& cube : m_pButtons) 
 		cube->update(frameTime);
 	for (auto& cube : m_pCubes) {
-		if (cube->isFollowing()) cube->setTranslate(m_pPlayer->getTranslateVec() + foward);
+		if (cube->isFollowing()) cube->setTranslate(m_pPlayer->getTranslateVec());
 		else cube->update(frameTime);
 	}
 	
@@ -513,7 +514,7 @@ void Scene::update(float frameTime)
 	//----------------------------------------------
 	// collide check
 	//----------------------------------------------
-	//		player - floor
+	//		player, cube - floor
 	glm::vec3 playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
 	glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
 	for (auto& floor : m_pFloor) {
@@ -523,9 +524,9 @@ void Scene::update(float frameTime)
 			m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
 
 		for (auto& cube : m_pCubes) {
-			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 20.0f;
-			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 20.0f;
-			if (aabbCollideCheck(floorMin, floorMax, cubeMin, cubeMax))
+			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 10.0f;
+			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 10.0f;
+			if (aabbCollideCheck(cubeMin, cubeMax, floorMin, floorMax))
 				cube->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
 		}
 	}
@@ -637,6 +638,7 @@ void Scene::update(float frameTime)
 			}
 		}
 	}
+
 	//----------------------------------------------
 	//		player - walls
 	if (!m_pPlayer->bIsHit()) {
@@ -692,6 +694,7 @@ void Scene::update(float frameTime)
 
 		}
 	}
+
 	//----------------------------------------------
 	//		 player cube
 	playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
@@ -842,12 +845,16 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 		m_pPortal[1]->draw(shaderNum, textureBind);
 
 	// cube
-	for (auto cube : m_pCubes) 
+	for (auto cube : m_pCubes) {
+		if (main && cube->isFollowing()) continue;
 		cube->draw(shaderNum, textureBind);
+	}
 
 	for (auto button : m_pButtons)
 		button->draw(shaderNum, textureBind);
 	
+	if (m_tCamera.fpsMode && !main) m_pPlayer->draw(shaderNum, textureBind);
+
 	// glass
 	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH);
@@ -857,7 +864,6 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 	
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH);
-	if (m_tCamera.fpsMode && !main) m_pPlayer->draw(shaderNum, textureBind);
 }
 
 void Scene::drawPortal(unsigned int shaderNum, int textureBind)

@@ -23,16 +23,16 @@ private:
 	bool m_bClear = false;
 
 private:
-	std::vector<Plane*> m_pFloor;
 	Portal* m_pPortal[2];
+	std::vector<Plane*> m_pFloor;
 	std::vector<Plane*> m_pWalls;
 	std::vector<Plane*> m_pGlasses;
 	std::vector<Plane*> m_pPortalWalls;
 	std::vector<Button*> m_pButtons;
+	std::vector<Cube*> m_pCubes;
 
 	Player* m_pPlayer;
 
-	std::vector<Cube*> m_pCubes;
 
 public:
 	Scene() = delete;
