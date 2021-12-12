@@ -146,8 +146,8 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				glm::vec3(-0.05f, 5.7f, 0.0f),
 				"Texture/alphablue.png"));
 
-		m_pPortal[0] = new Portal(1.0f, 2, glm::vec3(5.0f, 0.0f, 10.0f));
-		m_pPortal[1] = new Portal(1.0f, 1, glm::vec3(-10.0f, 0.0f, 1.0f));
+		//m_pPortal[0] = new Portal(1.0f, 2, glm::vec3(5.0f, 1.0f, 10.0f));
+		//m_pPortal[1] = new Portal(1.0f, 1, glm::vec3(-10.0f, 1.0f, 1.0f));
 
 
 
@@ -476,10 +476,6 @@ void Scene::update(float frameTime)
 	// update here
 	//----------------------------------------------
 	if (m_tCamera.fpsMode) {
-		glm::vec3 yPlus = m_pPlayer->getScaleVec() / 2.0f;
-		yPlus.x = 0;
-		yPlus.z = 0;
-		m_tCamera.vEYE = m_pPlayer->getTranslateVec() + yPlus;
 		foward = m_tCamera.vAT;
 		foward.y = 0;
 		foward = glm::normalize(foward);
@@ -551,8 +547,10 @@ void Scene::update(float frameTime)
 				// translate player
 				glm::vec3 offset = m_pPortal[!i]->getTranslateVec() - m_pPortal[i]->getTranslateVec();
 				m_pPlayer->setTranslate(playerPivot + offset);
-				printf("%.2f %.2f %.2f\n", offset.x, offset.y, offset.z);
 
+#ifdef _DEBUG
+				printVector(offset);
+#endif
 				// move a little
 				m_pPlayer->moveLittle(frameTime);
 				break;
@@ -622,10 +620,44 @@ void Scene::update(float frameTime)
 		// do sth like intersect check
 
 		for (auto const& wall : m_pPortalWalls) {
-			float size = 0.0f;
-			if (glm::intersectRayPlane(m_tCamera.vEYE, glm::normalize(m_tCamera.vAT), wall->getTranslateVec(), glm::normalize(wall->getNormal()), size)) {
-				printf("OMG HIT ");
+			glm::vec3 ray = m_tCamera.vAT;
+
+			glm::vec3 objDir = glm::normalize(wall->getTranslateVec() - m_pPlayer->getTranslateVec());
+
+			float dot = glm::dot(ray, objDir);
+
+			if (0.98f < dot && dot <= 1.0f) {
+				glm::vec3 planeNormal = wall->getNormal();
+
+				if (m_pPortal[m_iShoot - 1]) delete m_pPortal[m_iShoot - 1];
+
+				// set new position
+				float lenth = glm::length(wall->getTranslateVec() - m_pPlayer->getTranslateVec());
+				lenth -= lenth / 1000.0f;
+				glm::vec3 newPos = m_tCamera.vEYE + lenth * ray;
+
+				int faceNum = -1;
+				if (planeNormal.x >= 0.9f) faceNum = 1;
+				else if (planeNormal.x <= -0.9f) faceNum = 3;
+				else if (planeNormal.z >= 0.9f) faceNum = 0;
+				else if (planeNormal.z <= -0.9f) faceNum = 2;
+				else if (planeNormal.y >= 0.9f) faceNum = 4;
+				else if (planeNormal.y <= -0.9f) faceNum = 5;
+
+#ifdef _DEBUG
+				printf("Face Num : %d \t", faceNum);
+				printf("normal : ");
+#endif // DEBUG
+				printVector(planeNormal);
+				m_pPortal[m_iShoot - 1] = new Portal(1.0f, faceNum, wall->getTranslateVec());
+
+				break;
 			}
+
+			/*if (glm::intersectRayPlane(m_tCamera.vEYE, glm::normalize(m_tCamera.vAT), wall->getTranslateVec(), glm::normalize(wall->getNormal()), size)) {
+				printf("OMG HIT ");
+			}*/
+			
 		}
 
 
@@ -635,7 +667,12 @@ void Scene::update(float frameTime)
 	//----------------------------------------------
 	// camera update by player
 	//----------------------------------------------
-	if (m_tCamera.fpsMode) m_tCamera.vEYE = m_pPlayer->getTranslateVec();
+	if (m_tCamera.fpsMode) {
+		glm::vec3 yPlus = m_pPlayer->getScaleVec();
+		yPlus.x = 0;
+		yPlus.z = 0;
+		m_tCamera.vEYE = m_pPlayer->getTranslateVec() + yPlus;
+	}
 	else m_tCamera.vAT = m_pPlayer->getTranslateVec();
 
 	//----------------------------------------------
@@ -731,12 +768,12 @@ void Scene::drawPortal(unsigned int shaderNum, int textureBind)
 
 	CORE->updateViewMat();
 	CORE->updateProjMat();
-	glDepthFunc(GL_ALWAYS);
+	//glDepthFunc(GL_ALWAYS);
 
 	for (int i = 0; i < 2; ++i)
 		m_pPortal[i]->draw(shaderNum, textureBind);
 
-	glDepthFunc(GL_LESS);
+	//glDepthFunc(GL_LESS);
 	glColorMask(colorMasks[0], colorMasks[1], colorMasks[2], colorMasks[3]);
 	glDepthMask(depthMask);
 
