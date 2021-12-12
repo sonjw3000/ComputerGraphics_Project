@@ -377,9 +377,9 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 		wall->draw(shaderNum, textureBind);
 	}
 
-	//for (auto portalwall : m_pPortalWalls) {
-	//	portalwall->draw(shaderNum, textureBind);
-	//}
+	for (auto portalwall : m_pPortalWalls) {
+		portalwall->draw(shaderNum, textureBind);
+	}
 	//m_pPortal[0]->draw(shaderNum, textureBind);
 	//m_pPortal[1]->draw(shaderNum, textureBind);
 	for (auto cube : m_pCubes) {
