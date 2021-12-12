@@ -79,8 +79,8 @@ void Single::changeScene(int sceneNum)
 {
 	if (!m_pScene) delete m_pScene;
 	CameraVectors temp;
-	temp.pitch = 45.0f;
-	temp.yaw = 45.0f;
+	temp.pitch = 0.0f;
+	temp.yaw = 90.0f;
 	temp.vEYE = glm::vec3(1.0f);
 	temp.vAT = glm::vec3(0.0f);
 	temp.vUP = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -251,7 +251,8 @@ void Single::reshape(int w, int h)
 
 void Single::mouseAct(int key, int state, int x, int y)
 {
-	if (key == GLUT_LEFT_BUTTON) CORE->m_pScene->activeDragging(state == GLUT_DOWN, { x,y });
+	CORE->m_pScene->mouseActFucn(key, state, { x,y });
+	//if (key == GLUT_LEFT_BUTTON) 
 }
 
 void Single::mouseMove(int x, int y)
@@ -288,12 +289,25 @@ void Single::keyboardChecker(unsigned char key, int x, int y)
 
 	case 'p':
 		glutSetCursor(GLUT_CURSOR_NONE);
+		CORE->m_pScene->m_bHidenCursor = true;
 		CORE->m_bHideCursor = true;
 		break;
 	case 'P':
 		glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+		CORE->m_pScene->m_bHidenCursor = false;
 		CORE->m_bHideCursor = false;
 		break;
+
+	case '0':
+		CORE->changeScene(0);
+		break;
+	case '1':
+		CORE->changeScene(1);
+		break;
+	case '2':
+		CORE->changeScene(2);
+		break;
+
 	}
 }
 
