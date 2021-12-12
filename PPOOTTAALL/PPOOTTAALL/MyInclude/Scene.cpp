@@ -413,9 +413,11 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				glm::vec3(0.0f, 90.0f, 0.0f),
 				glm::vec3(9.f, 4.3f, -9.5f),
 				"Texture/alphablue.png"));
-		//glasses
+			break;
 
-		break;
+		default:
+			printf("Game Over\n");
+			break;
 	}
 
 
@@ -462,6 +464,8 @@ void Scene::input()
 	if (GetAsyncKeyState('D') & 0x8000) m_pPlayer->input('d');
 	if (GetAsyncKeyState('E') & 0x0001) m_pPlayer->input('e');
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)m_pPlayer->setJump();
+
+	if (m_bClear && GetAsyncKeyState(VK_RETURN) & 0x0001) CORE->changeScene(m_iSceneNum + 1);
 
 	if (GetAsyncKeyState('M') & 0x0001) {
 		glm::vec3 temp = m_pPlayer->getTranslateVec();
@@ -729,8 +733,8 @@ void Scene::update(float frameTime)
 			button->setPressState(false);
 		}
 	}
-	if (allClaer) {
-		printf("clear!\n");
+	if (!m_bClear && allClaer) {
+		printf("clear!\nPress Enter!\n");
 		m_bClear = true;
 	}
 
