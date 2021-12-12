@@ -22,7 +22,7 @@ private:
 	int m_iShoot = 0;
 
 private:
-	Plane* m_pFloor;
+	std::vector<Plane*> m_pFloor;
 	Portal* m_pPortal[2];
 	std::vector<Plane*> m_pWalls;
 	std::vector<Plane*> m_pGlasses;

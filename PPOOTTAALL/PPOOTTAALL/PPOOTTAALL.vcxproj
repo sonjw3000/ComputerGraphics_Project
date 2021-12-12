@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyInclude\Button.cpp" />
     <ClCompile Include="MyInclude\Core.cpp" />
     <ClCompile Include="MyInclude\Cube.cpp" />
     <ClCompile Include="MyInclude\CubeMap.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="MyInclude\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MyInclude\Button.h" />
     <ClInclude Include="MyInclude\CollisionCheck.h" />
     <ClInclude Include="MyInclude\Core.h" />
     <ClInclude Include="MyInclude\Cube.h" />

@@ -15,19 +15,18 @@ inline void printVector(glm::vec3 vec)
 
 
 Scene::Scene(int sceneNum, CameraVectors& cam) :
-	m_pPortal{nullptr, nullptr},
-	m_pFloor(nullptr),
+	m_pPortal{ nullptr, nullptr },
 	m_iSceneNum(sceneNum)
 {
-	m_pFloor = new Plane("Objs/Plane.obj", glm::vec3(21.0f, 0.1f, 21.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png");
+	m_pFloor.push_back(new Plane("Objs/Plane.obj", glm::vec3(21.0f, 0.1f, 21.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png"));
 	m_pPlayer = new Player(0.4f, glm::vec3(0.0f));
 
 	// right
 	m_pWalls.push_back(
 		new Plane("Objs/Plane.obj",
-			glm::vec3(11.0f, 0.0f, 22.0f), 
-			glm::vec3(0.0f, 0.0f, -90.0f), 
-			glm::vec3(-10.0f, 5.0f, 0.0f), 
+			glm::vec3(11.0f, 0.0f, 22.0f),
+			glm::vec3(0.0f, 0.0f, -90.0f),
+			glm::vec3(-10.0f, 5.0f, 0.0f),
 			"Texture/wall.png"));
 
 	// left
@@ -35,12 +34,12 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 		new Plane("Objs/Plane.obj",
 			glm::vec3(11.0f, 0.0f, 22.0f),
 			glm::vec3(0.0f, 0.0f, 90.0f),
-			glm::vec3(10.0f, 5.0f, 0.0f), 
+			glm::vec3(10.0f, 5.0f, 0.0f),
 			"Texture/wall.png"));
 
 	// back
 	m_pWalls.push_back(
-		new Plane("Objs/Plane.obj", 
+		new Plane("Objs/Plane.obj",
 			glm::vec3(22.0f, 0.0f, 11.0f),
 			glm::vec3(90.0f, 0.0f, 0.0f),
 			glm::vec3(0.0f, 5.0f, -10.0f),
@@ -49,7 +48,7 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 	// front
 	m_pWalls.push_back(
 		new Plane("Objs/Plane.obj",
-			glm::vec3(22.0f, 0.0f, 11.0f), 
+			glm::vec3(22.0f, 0.0f, 11.0f),
 			glm::vec3(-90.0f, 0.0f, 0.0f),
 			glm::vec3(0.0f, 5.0f, 10.0f),
 			"Texture/wall.png"));
@@ -70,10 +69,10 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 
 		// portal walls
 		m_pPortalWalls.push_back(
-			new Plane("Objs/Plane.obj", 
-				glm::vec3(1.0f, 0.0f, 2.0f), 
-				glm::vec3(-90.0f, 0.0f, 0.0f), 
-				glm::vec3(4.5f, 1.0f, 9.99f), 
+			new Plane("Objs/Plane.obj",
+				glm::vec3(1.0f, 0.0f, 2.0f),
+				glm::vec3(-90.0f, 0.0f, 0.0f),
+				glm::vec3(4.5f, 1.0f, 9.99f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
@@ -83,9 +82,9 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
-				glm::vec3(2.0f, 0.0f, 1.0f), 
-				glm::vec3(0.0f, 0.0f, -90.0f), 
-				glm::vec3(-9.99f, 1.0f, 1.5f), 
+				glm::vec3(2.0f, 0.0f, 1.0f),
+				glm::vec3(0.0f, 0.0f, -90.0f),
+				glm::vec3(-9.99f, 1.0f, 1.5f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
@@ -95,9 +94,9 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
-				glm::vec3(2.0f, 0.0f, 1.0f), 
-				glm::vec3(0.0f, 0.0f, -90.0f), 
-				glm::vec3(-9.99f, 6.0f, 7.5f), 
+				glm::vec3(2.0f, 0.0f, 1.0f),
+				glm::vec3(0.0f, 0.0f, -90.0f),
+				glm::vec3(-9.99f, 6.0f, 7.5f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
@@ -149,7 +148,7 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 		m_pPortal[0] = new Portal(1.0f, 2, glm::vec3(5.0f, 0.0f, 10.0f));
 		m_pPortal[1] = new Portal(1.0f, 1, glm::vec3(-10.0f, 0.0f, 1.0f));
 
-		
+
 
 		//m_pGlasses.push_back(
 		//	new Plane("Objs/Cube.obj",
@@ -293,7 +292,7 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				"Texture/alphablue.png"));
 		break;
 	case 2:
-		m_pPlayer->setTranslate(glm::vec3(9.0f, 1.0f, -9.0f));
+		m_pPlayer->setTranslate(glm::vec3(9.5f, 5.0f, -9.5f));
 		m_pCubes.push_back(
 			new Cube("Objs/PortalCube.obj",
 				glm::vec3(0.5f, 0.5f, 0.5f),
@@ -311,38 +310,38 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(9.5f, 0.001f, 9.0f),
+				glm::vec3(9.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(8.5f, 0.001f, 9.0f),
+				glm::vec3(8.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(7.5f, 0.001f, 9.0f),
+				glm::vec3(7.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(-9.5f, 0.001f, 9.0f),
+				glm::vec3(-9.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(-8.5f, 0.001f, 9.0f),
+				glm::vec3(-8.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(-7.5f, 0.001f, 9.0f),
+				glm::vec3(-7.5f, 0.01f, 9.0f),
 				"Texture/realwhite.png"));
 
 		m_pPortalWalls.push_back(
@@ -387,30 +386,50 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 		m_pWalls.push_back(
 			new Plane("Objs/roundPlane.obj",
 				glm::vec3(3.0f, 0.0f, 3.0f),
-				glm::vec3(0.0f), glm::vec3(-8.5f, 0.001f, -8.5f),
+				glm::vec3(0.0f), glm::vec3(-8.5f, 0.01f, -8.5f),
 				"Texture/realred.png"));
 		m_pWalls.push_back(
 			new Plane("Objs/roundPlane.obj",
 				glm::vec3(3.0f, 0.0f, 3.0f),
-				glm::vec3(0.0f), glm::vec3(0.f, 0.001f, 0.0f),
+				glm::vec3(0.0f), glm::vec3(0.f, 0.01f, 0.0f),
 				"Texture/realred.png"));
 
 		// transparent wall
-		m_pWalls.push_back(
+		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
 				glm::vec3(3.0f, 0.0f, 2.0f),
 				glm::vec3(180.0f, 0.0f, 0.0f),
 				glm::vec3(0.0f, 6.99f, 0.0f),
-				"Texture/realblack.png"));
+				"Texture/alphared.png"));
 
-		m_pWalls.push_back(
+		m_pFloor.push_back(
 			new Plane("Objs/Cube.obj",
-				glm::vec3(1.5f, 0.0f, 1.5f),
+				glm::vec3(1.1f, 0.0f, 1.1f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(0.0f, 6.99f, 0.0f),
-				"Texture/realblack.png"));
+				glm::vec3(9.5f, 4.0f, -9.5f),
+				"Texture/alphablue.png"));
+
+		m_pFloor.push_back(
+			new Plane("Objs/Cube.obj",
+				glm::vec3(1.1f, 0.0f, 1.1f),
+				glm::vec3(0.0f, 0.0f, 0.0f),
+				glm::vec3(9.5f, 5.2f, -9.5f),
+				"Texture/alphablue.png"));
+
+		m_pGlasses.push_back(
+			new Plane("Objs/Cube.obj",
+				glm::vec3(1.2f, 1.0f, 0.1f),
+				glm::vec3(0.0f, 0.0f, 0.0f),
+				glm::vec3(9.5f, 4.3f, -9.0f),
+				"Texture/alphablue.png"));
+		m_pGlasses.push_back(
+			new Plane("Objs/Cube.obj",
+				glm::vec3(1.2f, 1.0f, 0.1f),
+				glm::vec3(0.0f, 90.0f, 0.0f),
+				glm::vec3(9.f, 4.3f, -9.5f),
+				"Texture/alphablue.png"));
 		//glasses
-		
+
 		break;
 	}
 
@@ -431,12 +450,14 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 
 Scene::~Scene()
 {
-	delete m_pFloor;
 	delete m_pPlayer;
 
-	for(int i = 0; i < 2; ++i)
+	for (int i = 0; i < 2; ++i)
 		if (m_pPortal[i]) delete m_pPortal[i];
-
+	for (auto& floor : m_pFloor) {
+		delete floor;
+	}
+	m_pFloor.clear();
 	for (auto& wall : m_pWalls) {
 		delete wall;
 	}
@@ -459,14 +480,14 @@ void Scene::input()
 	if (GetAsyncKeyState('M') & 0x0001) {
 		glm::vec3 temp = m_pPlayer->getTranslateVec();
 		printVector(temp);
-		
+
 		if (m_pPortal[0] && m_pPortal[1]) {
 			glm::mat4 portalCam = getPortalView(m_pPortal[0], m_pPortal[1]);
 			glm::vec3 eye(portalCam[3][0], portalCam[3][1], portalCam[3][2]);
 			printVector(eye);
 		}
 	}
-	
+
 }
 
 void Scene::update(float frameTime)
@@ -502,11 +523,12 @@ void Scene::update(float frameTime)
 	//		player - floor
 	glm::vec3 playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
 	glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
-	glm::vec3 floorMin = m_pFloor->getTranslateVec() - m_pFloor->getScaleVec() / 2.0f;
-	glm::vec3 floorMax = m_pFloor->getTranslateVec() + m_pFloor->getScaleVec() / 2.0f;
-	if (aabbCollideCheck(playerMin, playerMax, floorMin, floorMax)) 
-		m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
-
+	for (auto floor : m_pFloor) {
+		glm::vec3 floorMin = floor->getTranslateVec() - floor->getScaleVec() / 2.0f;
+		glm::vec3 floorMax = floor->getTranslateVec() + floor->getScaleVec() / 2.0f;
+		if (aabbCollideCheck(playerMin, playerMax, floorMin, floorMax))
+			m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
+	}
 	//----------------------------------------------
 	//		player - portal
 	if (m_pPortal[0] && m_pPortal[1]) {
@@ -565,7 +587,7 @@ void Scene::update(float frameTime)
 	for (const auto& wall : m_pWalls) {
 		glm::vec3 wallMin = wall->getTranslateVec() - wall->getScaleVec() / 2.0f;
 		glm::vec3 wallMax = wall->getTranslateVec() + wall->getScaleVec() / 2.0f;
-		
+
 		if (aabbCollideCheck(playerMin, playerMax, wallMin, wallMax)) {
 			for (int i = 0; i < 3; i += 2) {
 				glm::vec3 min = playerMin;
@@ -637,7 +659,7 @@ void Scene::update(float frameTime)
 	//----------------------------------------------
 	if (m_tCamera.fpsMode) m_tCamera.vEYE = m_pPlayer->getTranslateVec();
 	else m_tCamera.vAT = m_pPlayer->getTranslateVec();
-	
+
 	//----------------------------------------------
 	CORE->updateViewMat();
 	m_pPlayer->setDirZero();
@@ -646,7 +668,9 @@ void Scene::update(float frameTime)
 void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 {
 	// draw all
-	m_pFloor->draw(shaderNum, textureBind);
+	for (auto floor : m_pFloor) {
+		floor->draw(shaderNum, textureBind);
+	}
 
 	for (auto wall : m_pWalls) {
 		wall->draw(shaderNum, textureBind);
@@ -668,7 +692,7 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 	}
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH);
-	if(m_tCamera.fpsMode && !main) m_pPlayer->draw(shaderNum, textureBind);
+	if (m_tCamera.fpsMode && !main) m_pPlayer->draw(shaderNum, textureBind);
 }
 
 void Scene::drawPortal(unsigned int shaderNum, int textureBind)
@@ -733,14 +757,14 @@ void Scene::drawPortal(unsigned int shaderNum, int textureBind)
 	CORE->updateProjMat();
 	glDepthFunc(GL_ALWAYS);
 
-	for (int i = 0; i < 2; ++i) 
+	for (int i = 0; i < 2; ++i)
 		m_pPortal[i]->draw(shaderNum, textureBind);
-	
+
 	glDepthFunc(GL_LESS);
 	glColorMask(colorMasks[0], colorMasks[1], colorMasks[2], colorMasks[3]);
 	glDepthMask(depthMask);
 
-	
+
 }
 
 void Scene::mouseActFucn(int key, int state, POINT pt)

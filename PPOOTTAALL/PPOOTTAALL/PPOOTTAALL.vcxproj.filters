@@ -64,6 +64,9 @@
     <Filter Include="소스 파일\Mesh\Cube">
       <UniqueIdentifier>{b9c8a4dc-163d-45af-b678-c2dca23bfc2c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Mesh\Button">
+      <UniqueIdentifier>{381271e0-b630-4323-8c92-59b219b4dc82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -104,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="MyInclude\Cube.cpp">
       <Filter>소스 파일\Mesh\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="MyInclude\Button.cpp">
+      <Filter>소스 파일\Mesh\Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="MyInclude\Cube.h">
       <Filter>소스 파일\Mesh\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="MyInclude\Button.h">
+      <Filter>소스 파일\Mesh\Button</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
