@@ -16,7 +16,6 @@ inline void printVector(glm::vec3 vec)
 
 Scene::Scene(int sceneNum, CameraVectors& cam) :
 	m_pPortal{ nullptr, nullptr },
-	m_pFloor(nullptr),
 	m_iSceneNum(sceneNum)
 {
 	m_pFloor.push_back(new Plane("Objs/Plane.obj", glm::vec3(21.0f, 0.1f, 21.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png"));
@@ -524,10 +523,13 @@ void Scene::update(float frameTime)
 	//		player - floor
 	glm::vec3 playerMin = m_pPlayer->getTranslateVec() - m_pPlayer->getScaleVec() / 2.0f;
 	glm::vec3 playerMax = m_pPlayer->getTranslateVec() + m_pPlayer->getScaleVec() / 2.0f;
-	glm::vec3 floorMin = m_pFloor->getTranslateVec() - m_pFloor->getScaleVec() / 2.0f;
-	glm::vec3 floorMax = m_pFloor->getTranslateVec() + m_pFloor->getScaleVec() / 2.0f;
-	if (aabbCollideCheck(playerMin, playerMax, floorMin, floorMax))
-		m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
+	for (auto floor : m_pFloor) {
+		glm::vec3 floorMin = floor->getTranslateVec() - floor->getScaleVec() / 2.0f;
+		glm::vec3 floorMax = floor->getTranslateVec() + floor->getScaleVec() / 2.0f;
+		if (aabbCollideCheck(playerMin, playerMax, floorMin, floorMax))
+			m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
 
 	//----------------------------------------------
 	//		player - portal
