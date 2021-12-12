@@ -610,13 +610,36 @@ void Scene::update(float frameTime)
 		glm::vec3 wallMax = wall->getTranslateVec() + wall->getScaleVec() / 2.0f;
 		
 		if (aabbCollideCheck(playerMin, playerMax, wallMin, wallMax)) {
-			//printf("holly shit ");
-			glm::vec3 normal = wall->getNormal();
-			glm::vec3 offset = wall->getTranslateVec() - m_pPlayer->getTranslateVec();
-			glm::vec3 size = glm::abs(m_pPlayer->getScaleVec() / 2.0f) * normal;
-			glm::vec3 move = size - normal * offset;
-			printVector(normal);
-			//m_pPlayer->moveBack(-move);
+			////printf("holly shit ");
+			//glm::vec3 normal = wall->getNormal();
+			//glm::vec3 offset = wall->getTranslateVec() - m_pPlayer->getTranslateVec();
+			//glm::vec3 size = glm::abs(m_pPlayer->getScaleVec() / 2.0f) * normal;
+			//glm::vec3 move = size - normal * offset;
+			//printVector(normal);
+			////m_pPlayer->moveBack(-move);
+			// up face
+			for (int i = 0; i < 3; i += 2) {
+				glm::vec3 min = playerMin;
+				glm::vec3 max = playerMax;
+
+				// plus Face
+				min[i] = max[i];
+				if (aabbCollideCheck(min, max, wallMin, wallMax)) {
+					min = playerMin;
+					max[i] = min[i];
+					// minus Face
+					if (aabbCollideCheck(min, max, wallMin, wallMax)) {
+						glm::vec3 back(i == 2, 0.0f, i == 0);
+
+
+						printVector(back * frameTime);
+						printf("%d  ", i);
+
+						m_pPlayer->moveBack(back);
+						break;
+					}
+				}
+			}
 		}
 	}
 

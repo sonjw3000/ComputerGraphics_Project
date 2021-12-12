@@ -24,7 +24,7 @@ public:
 	~Player();
 
 private:
-	bool m_bAlive = false;
+	glm::vec3 m_vBefMove = glm::vec3(0.0f);
 
 public:
 

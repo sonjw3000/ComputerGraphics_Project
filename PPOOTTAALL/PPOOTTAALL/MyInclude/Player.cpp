@@ -71,12 +71,14 @@ void Player::update(float deltaTime)
 	offset.y += m_fFallingSpeed * deltaTime;
 	offset.z *= fMoveSpeed * deltaTime;
 
+
 	m_fFallingSpeed -= fGravity * deltaTime;
 	if (m_fFallingSpeed <= -216.0f) m_fFallingSpeed = -216.0f;		// terminal falling speed
 	if (m_bJump && !m_bFalling && m_fFallingSpeed <= 0.0f) m_bFalling = true;
 
 	//glm::vec3 offset = m_vDir * fMoveSpeed * deltaTime;
 	this->setTranslate(m_vPivot + offset);
+	m_vBefMove = offset;
 
 
 
@@ -210,10 +212,10 @@ void Player::moveBack(glm::vec3 backHow)
 		m_bFalling = false;
 		m_fFallingSpeed = 0.0f;
 	}
-
+	
 	glm::vec3 temp(m_vDir.x != 0, m_vDir.y != 0, m_vDir.z != 0);
 
-	backHow = backHow * temp;
+	backHow = backHow * m_vBefMove;
 
 	this->setTranslate(m_vPivot - backHow);
 }
