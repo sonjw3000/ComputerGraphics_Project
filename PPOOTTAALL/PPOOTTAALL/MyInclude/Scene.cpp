@@ -556,7 +556,7 @@ void Scene::update(float frameTime)
 					printf("tt\n");
 				}
 				
-				else if (abs(rotOffset.y) >= 179.0f) {
+				else if (abs(rotOffset.y) >= 179.0f && (rotOffset.y) <= 181.0f) {
 					rotOffset.y = 0;
 					printf("same\n");
 				}
