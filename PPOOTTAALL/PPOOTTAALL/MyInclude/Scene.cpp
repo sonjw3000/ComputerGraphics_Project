@@ -523,8 +523,8 @@ void Scene::update(float frameTime)
 			m_pPlayer->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
 
 		for (auto& cube : m_pCubes) {
-			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 10.0f;
-			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 10.0f;
+			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 5.0f;
+			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 5.0f;
 			if (aabbCollideCheck(cubeMin, cubeMax, floorMin, floorMax))
 				cube->moveBack(glm::vec3(0.0f, 1.0f, 0.0f));
 		}
@@ -553,12 +553,10 @@ void Scene::update(float frameTime)
 				// 
 				if (glm::length(rotOffset) <= 0.1f) {
 					rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
-					printf("tt\n");
 				}
 				
 				else if (abs(rotOffset.y) >= 179.0f && (rotOffset.y) <= 181.0f) {
 					rotOffset.y = 0;
-					printf("same\n");
 				}
 				glm::mat4 rotMat(1.0f);
 				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -592,9 +590,6 @@ void Scene::update(float frameTime)
 
 				glm::vec3 offset = m_pPortal[!i]->getTranslateVec() - m_pPortal[i]->getTranslateVec();
 				
-				glm::vec3 temp = (rotMat * glm::vec4((playerPivot - m_pPortal[i]->getTranslateVec()), 1.0f));
-				temp += m_pPortal[i]->getTranslateVec();
-
 				m_pPlayer->setTranslate(playerPivot + offset);
 
 				glm::vec3 befDir = m_pPlayer->getDir();
@@ -640,12 +635,12 @@ void Scene::update(float frameTime)
 					// 
 					if (glm::length(rotOffset) <= 0.1f) {
 						rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
-						printf("tt\n");
 					}
-
-					else if (abs(rotOffset.y) >= 179.0f) {
+					else if (abs(rotOffset.y) >= 179.0f && (rotOffset.y) <= 181.0f) {
 						rotOffset.y = 0;
-						printf("same\n");
+					}
+					else if (abs(rotOffset.z) >= 179.0f && (rotOffset.z) <= 181.0f) {
+						rotOffset.z = 0;
 					}
 					glm::mat4 rotMat(1.0f);
 					rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -653,9 +648,13 @@ void Scene::update(float frameTime)
 					rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
 					glm::vec3 offset = m_pPortal[!i]->getTranslateVec() - m_pPortal[i]->getTranslateVec();
+
 					cube->setTranslate(cube->getTranslateVec() + offset);
-					if (glm::length(rotOffset) <= 0.1f) cube->moveLittle(-frameTime * 100);
-					cube->moveLittle(-frameTime * 50);
+
+					printVector(rotOffset);
+
+					if (glm::length(rotOffset) <= 0.1f) cube->moveLittle(frameTime * 100);
+					cube->moveLittle(frameTime * 50);
 				}
 			}
 		}
