@@ -21,7 +21,7 @@ inline bool isSameFloat(float a, float b)
 
 Scene::Scene(int sceneNum, CameraVectors& cam) :
 	m_pPortal{ nullptr, nullptr },
-	m_iSceneNum(sceneNum)
+	m_iSceneNum(sceneNum) 
 {
 	m_pFloor.push_back(new Plane("Objs/Plane.obj", glm::vec3(21.0f, 0.1f, 21.0f), glm::vec3(0.0f), glm::vec3(0.0f), "Texture/bg.png"));
 	m_pPlayer = new Player(0.4f, glm::vec3(0.0f));
@@ -189,13 +189,13 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 			new Plane("Objs/Plane.obj",
 				glm::vec3(2.0f, 0.0f, 1.0f),
 				glm::vec3(0.0f, 0.0f, 90.0f),
-				glm::vec3(9.99f, 9.0f, 7.5f),
+				glm::vec3(9.9f, 9.0f, 7.5f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(2.0f, 0.0f, 1.0f),
 				glm::vec3(0.0f, 0.0f, 90.0f),
-				glm::vec3(9.99f, 9.0f, 6.5f),
+				glm::vec3(9.9f, 9.0f, 6.5f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
@@ -430,7 +430,6 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 	else {
 		m_tCamera = cam;
 	}
-
 }
 
 Scene::~Scene()
@@ -552,8 +551,15 @@ void Scene::update(float frameTime)
 				glm::vec3 rotOffset = distRot - srcRot;
 				//rotOffset.y += 180.0f;
 				// 
-				if (glm::length(rotOffset) <= 0.1f) rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
-
+				if (glm::length(rotOffset) <= 0.1f) {
+					rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
+					printf("tt\n");
+				}
+				
+				else if (abs(rotOffset.y) >= 179.0f) {
+					rotOffset.y = 0;
+					printf("same\n");
+				}
 				glm::mat4 rotMat(1.0f);
 				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f));
 				rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.y), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -589,18 +595,24 @@ void Scene::update(float frameTime)
 				glm::vec3 temp = (rotMat * glm::vec4((playerPivot - m_pPortal[i]->getTranslateVec()), 1.0f));
 				temp += m_pPortal[i]->getTranslateVec();
 
-				m_pPlayer->setTranslate(temp + offset);
+				m_pPlayer->setTranslate(playerPivot + offset);
 
-				glm::vec3 tempDir = rotMat * glm::vec4(m_pPlayer->getDir(), 0.0f);
+				glm::vec3 befDir = m_pPlayer->getDir();
+				glm::vec3 tempDir = rotMat * glm::vec4(befDir, 0.0f);
 				m_pPlayer->setDir(tempDir);
 				m_pPlayer->hit();
 
 #ifdef _DEBUG
-				printf("hit ");
-				//printVector(temp + offset);
+				printf("befDir : ");
+				printVector(befDir);
+				printf("rotOff : ");
+				printVector(rotOffset);
+				printf("newDir : ");
+				printVector(tempDir);
 #endif
 				// move a little
-				m_pPlayer->moveLittle(frameTime * 5);
+				if (glm::length(rotOffset) <= 0.1f) m_pPlayer->moveLittle(frameTime * 100);
+				m_pPlayer->moveLittle(frameTime * 50);
 				break;
 			}
 		}
@@ -610,6 +622,7 @@ void Scene::update(float frameTime)
 	//		cube - portal
 	if (m_pPortal[0] && m_pPortal[1]) {
 		for (auto cube : m_pCubes) {
+			if (cube->isFollowing()) continue;
 			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 2.0f;
 			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 2.0f;
 			for (int i = 0; i < 2; ++i) {
@@ -623,8 +636,17 @@ void Scene::update(float frameTime)
 
 					// rot offset
 					glm::vec3 rotOffset = distRot - srcRot;
-					if (glm::length(rotOffset) <= 0.1f || glm::length(rotOffset) >= 179.0f) rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
+					//rotOffset.y += 180.0f;
+					// 
+					if (glm::length(rotOffset) <= 0.1f) {
+						rotOffset = glm::vec3(0.0f, 180.0f, 0.0f);
+						printf("tt\n");
+					}
 
+					else if (abs(rotOffset.y) >= 179.0f) {
+						rotOffset.y = 0;
+						printf("same\n");
+					}
 					glm::mat4 rotMat(1.0f);
 					rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f));
 					rotMat = glm::rotate(rotMat, glm::radians(-rotOffset.y), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -632,8 +654,8 @@ void Scene::update(float frameTime)
 
 					glm::vec3 offset = m_pPortal[!i]->getTranslateVec() - m_pPortal[i]->getTranslateVec();
 					cube->setTranslate(cube->getTranslateVec() + offset);
-					cube->moveLittle(frameTime);
-					break;
+					if (glm::length(rotOffset) <= 0.1f) cube->moveLittle(-frameTime * 100);
+					cube->moveLittle(-frameTime * 50);
 				}
 			}
 		}
@@ -850,8 +872,10 @@ void Scene::draw(unsigned int shaderNum, int textureBind, bool main)
 		cube->draw(shaderNum, textureBind);
 	}
 
-	for (auto button : m_pButtons)
+	for (auto button : m_pButtons) {
 		button->draw(shaderNum, textureBind);
+
+	}
 	
 	if (m_tCamera.fpsMode && !main) m_pPlayer->draw(shaderNum, textureBind);
 
