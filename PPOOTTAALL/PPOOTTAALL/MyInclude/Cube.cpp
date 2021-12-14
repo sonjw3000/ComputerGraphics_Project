@@ -68,6 +68,7 @@ void Cube::moveBack(glm::vec3 backHow)
 void Cube::moveLittle(float deltaTime)
 {
 	glm::vec3 offset(0.0f);
-	offset.y += m_fFallingSpeed * deltaTime;
-	setTranslate(m_vPivot + offset * deltaTime);
+	//offset.y -= (35.28f + m_fFallingSpeed) * deltaTime;
+	offset.y = -m_vScale.y / 2.0f;
+	setTranslate(m_vPivot + offset);
 }

@@ -21,6 +21,7 @@ public:
 private:
 	int m_iShoot = 0;
 	bool m_bClear = false;
+	float m_fChangeTime = 0.0f;
 
 private:
 	Portal* m_pPortal[2];

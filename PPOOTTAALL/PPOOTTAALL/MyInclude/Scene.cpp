@@ -465,7 +465,7 @@ void Scene::input()
 	if (GetAsyncKeyState('E') & 0x0001) m_pPlayer->input('e');
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)m_pPlayer->setJump();
 
-	if (m_bClear && GetAsyncKeyState(VK_RETURN) & 0x0001) CORE->changeScene(m_iSceneNum + 1);
+	//if (m_bClear && GetAsyncKeyState(VK_RETURN) & 0x0001) CORE->changeScene(m_iSceneNum + 1);
 
 	if (GetAsyncKeyState('M') & 0x0001) {
 		glm::vec3 temp = m_pPlayer->getTranslateVec();
@@ -760,9 +760,13 @@ void Scene::update(float frameTime)
 		}
 	}
 	if (!m_bClear && allClaer) {
-		printf("clear!\nPress Enter!\n");
+		//printf("clear!\nPress Enter!\n");
 		m_bClear = true;
 	}
+
+
+	m_fChangeTime += m_bClear * frameTime;
+	if (m_fChangeTime >= 5.0f) CORE->changeScene(m_iSceneNum + 1);
 
 	//----------------------------------------------
 	// make portal
