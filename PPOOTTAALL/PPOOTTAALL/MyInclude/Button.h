@@ -12,6 +12,7 @@ private:
 
 private:
 	Mesh* m_pBase;
+	Mesh* m_pButton;
 
 	float m_vMinSize = 0.4f;
 	bool m_bPressed = false;
@@ -31,6 +32,8 @@ public:
 public:
 	void setPressState(bool state);
 	bool isPressed() const;
+	glm::vec3 getButtonTranslateVec() const;
+	glm::vec3 getButtonScaleVec() const;
 };
 
 
