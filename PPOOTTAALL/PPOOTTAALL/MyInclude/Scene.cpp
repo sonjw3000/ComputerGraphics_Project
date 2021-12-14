@@ -741,8 +741,10 @@ void Scene::update(float frameTime)
 	bool allClaer = true;
 	for (auto& button : m_pButtons) {
 		bool bPushed = false;
-		glm::vec3 buttonMin = button->getTranslateVec() - button->getScaleVec() / 2.0f;
-		glm::vec3 buttonMax = button->getTranslateVec() + button->getScaleVec() / 2.0f;
+		//glm::vec3 buttonMin = button->getTranslateVec() - button->getScaleVec() / 2.0f;
+		//glm::vec3 buttonMax = button->getTranslateVec() + button->getScaleVec() / 2.0f;
+		glm::vec3 buttonMin = button->getButtonTranslateVec() - button->getButtonScaleVec() / 2.0f;
+		glm::vec3 buttonMax = button->getButtonTranslateVec() + button->getButtonScaleVec() / 2.0f;
 		for (auto& cube : m_pCubes) {
 			glm::vec3 cubeMin = cube->getTranslateVec() - cube->getScaleVec() / 2.0f;
 			glm::vec3 cubeMax = cube->getTranslateVec() + cube->getScaleVec() / 2.0f;
