@@ -69,12 +69,12 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 				glm::vec3(0.5f, 0.5f, 0.5f),
 				glm::vec3(0.0f), glm::vec3(-9.0f, 5.0f, 7.0f),
 				"Texture/PortalCube.jpg"));
-		m_pCubes.push_back(
-			new Cube("Objs/PortalCube.obj",
-				glm::vec3(0.5f),
-				glm::vec3(0.0f),
-				glm::vec3(5.0f, 8.0f, 5.0f),
-				"Texture/PortalCube.jpg"));
+		//m_pCubes.push_back(
+		//	new Cube("Objs/PortalCube.obj",
+		//		glm::vec3(0.5f),
+		//		glm::vec3(0.0f),
+		//		glm::vec3(5.0f, 8.0f, 5.0f),
+		//		"Texture/PortalCube.jpg"));
 		// portal walls
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
