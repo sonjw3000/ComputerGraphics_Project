@@ -766,7 +766,7 @@ void Scene::update(float frameTime)
 
 
 	m_fChangeTime += m_bClear * frameTime;
-	if (m_fChangeTime >= 5.0f) CORE->changeScene(m_iSceneNum + 1);
+	if (m_pButtons.size() && m_fChangeTime >= 5.0f) CORE->changeScene(m_iSceneNum + 1);
 
 	//----------------------------------------------
 	// make portal
