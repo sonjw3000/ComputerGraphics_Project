@@ -265,13 +265,13 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 			new Plane("Objs/Cube.obj",
 				glm::vec3(2.0f, 0.1f, 3.0f),
 				glm::vec3(90.0f, 0.0f, 0.0f),
-				glm::vec3(6.f, 1.5f, 2.05f),
+				glm::vec3(6.f, 1.5f, 2.0f),
 				"Texture/alphared.png"));
 		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
 				glm::vec3(2.0f, 0.1f, 3.0f),
 				glm::vec3(90.0f, 0.0f, 0.0f),
-				glm::vec3(6.0f, 1.5f, -0.05f),
+				glm::vec3(6.0f, 1.5f, -0.0f),
 				"Texture/alphared.png"));
 		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
@@ -337,38 +337,38 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 			new Plane("Objs/Plane.obj",
 				glm::vec3(2.0f, 0.0f, 1.0f),
 				glm::vec3(0.0f, 0.0f, 180.0f),
-				glm::vec3(-9.f, 9.f, -9.5f),
+				glm::vec3(-9.f, 10.f, -9.5f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(2.0f, 0.0f, 1.0f),
 				glm::vec3(0.0f, 0.0f, 180.0f),
-				glm::vec3(-9.f, 9.f, -8.5f),
+				glm::vec3(-9.f, 10.f, -8.5f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(2.0f, 7.0f, 1.0f),
 				glm::vec3(0.0f, 0.0f, 180.0f),
-				glm::vec3(-9.f, 9.f, -7.5f),
+				glm::vec3(-9.f, 10.f, -7.5f),
 				"Texture/realwhite.png"));
 
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(180.0f, 0.0f, 0.0f),
-				glm::vec3(1.f, 7.f, 0.0f),
+				glm::vec3(1.f, 10.f, 0.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(180.0f, 0.0f, 0.0f),
-				glm::vec3(0.f, 7.f, 0.0f),
+				glm::vec3(0.f, 10.f, 0.0f),
 				"Texture/realwhite.png"));
 		m_pPortalWalls.push_back(
 			new Plane("Objs/Plane.obj",
 				glm::vec3(1.0f, 0.0f, 2.0f),
 				glm::vec3(180.0f, 0.0f, 0.0f),
-				glm::vec3(-1.0f, 7.f, 0.0f),
+				glm::vec3(-1.0f, 10.f, 0.0f),
 				"Texture/realwhite.png"));
 
 		// button
@@ -378,12 +378,12 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 			new Button(2.0f, glm::vec3(0.f, 0.01f, 0.0f)));
 
 		// transparent wall
-		m_pGlasses.push_back(
-			new Plane("Objs/Cube.obj",
-				glm::vec3(3.0f, 0.0f, 2.0f),
-				glm::vec3(180.0f, 0.0f, 0.0f),
-				glm::vec3(0.0f, 6.99f, 0.0f),
-				"Texture/alphared.png"));
+		//m_pGlasses.push_back(
+		//	new Plane("Objs/Cube.obj",
+		//		glm::vec3(3.0f, 0.0f, 2.0f),
+		//		glm::vec3(180.0f, 0.0f, 0.0f),
+		//		glm::vec3(0.0f, 6.99f, 0.0f),
+		//		"Texture/alphared.png"));
 
 		m_pFloor.push_back(
 			new Plane("Objs/Cube.obj",
@@ -396,18 +396,18 @@ Scene::Scene(int sceneNum, CameraVectors& cam) :
 			new Plane("Objs/Cube.obj",
 				glm::vec3(1.1f, 0.0f, 1.1f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(9.5f, 5.2f, -9.5f),
+				glm::vec3(9.5f, 5.25f, -9.5f),
 				"Texture/alphablue.png"));
 
 		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
-				glm::vec3(1.2f, 1.0f, 0.1f),
+				glm::vec3(1.2f, 0.3f, 0.1f),
 				glm::vec3(0.0f, 0.0f, 0.0f),
 				glm::vec3(9.5f, 4.3f, -9.0f),
 				"Texture/alphablue.png"));
 		m_pGlasses.push_back(
 			new Plane("Objs/Cube.obj",
-				glm::vec3(1.2f, 1.0f, 0.1f),
+				glm::vec3(1.2f, 0.3f, 0.1f),
 				glm::vec3(0.0f, 90.0f, 0.0f),
 				glm::vec3(9.f, 4.3f, -9.5f),
 				"Texture/alphablue.png"));
